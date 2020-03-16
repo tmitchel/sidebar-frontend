@@ -44,6 +44,7 @@ export default {
     source: String
   },
   data: () => ({
+    currentChannel: "",
     newChannel: false
   }),
   computed: {

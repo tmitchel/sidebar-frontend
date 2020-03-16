@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer permanent app>
+  <v-navigation-drawer permanent app width="200">
     <v-list dense>
       <v-list-item>
         <v-list-item-content>
