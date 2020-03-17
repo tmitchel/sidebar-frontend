@@ -15,10 +15,32 @@
     >
       <template v-slot:append>
         <v-btn-toggle borderless="">
-          <v-btn dark icon>
-            <v-icon>mdi-emoticon-happy-outline</v-icon>
-          </v-btn>
-          <v-btn dark icon class="title">@</v-btn>
+          <v-menu top offset-y :return-value="meh">
+            <template v-slot:activator="{ on }">
+              <v-btn dark icon v-on="on">
+                <v-btn dark icon class="title">@</v-btn>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item
+                v-for="user in users"
+                :key="user.ID"
+                @click.prevent="addAt(user.Username)"
+              >
+                <v-list-item-title>{{ user.Username }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+          <v-dialog attach="#test" width="400">
+            <template v-slot:activator="{ on }">
+              <v-btn id="test" dark icon v-on="on">
+                <v-icon>mdi-emoticon-happy-outline</v-icon>
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-text>hi</v-card-text>
+            </v-card>
+          </v-dialog>
         </v-btn-toggle>
       </template>
     </v-textarea>
@@ -28,14 +50,18 @@
 <script>
 export default {
   name: "MessageInput",
-  props: ["send"],
+  props: ["send", "users"],
   data: () => ({
-    message: ""
+    message: "",
+    meh: ""
   }),
   methods: {
     handleSend() {
       this.send(this.message);
       this.message = "";
+    },
+    addAt(username) {
+      this.message += `@${username} `;
     }
   }
 };

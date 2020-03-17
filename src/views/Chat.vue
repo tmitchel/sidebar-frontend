@@ -1,11 +1,7 @@
 <template>
   <v-container class="fill-height no-marg" fluid>
     <!-- Left panel showing channels -->
-    <sidebar
-      :channels="channels"
-      :changeChannel="changeChannel"
-      :newChannel="openNewChannel"
-    />
+    <sidebar :channels="channels" :changeChannel="changeChannel" :newChannel="openNewChannel" />
 
     <!-- Overlay for creating a new channel -->
     <v-overlay :absolute="false" opacity=".86" :value="newChannel" z-index="6">
@@ -13,16 +9,16 @@
     </v-overlay>
 
     <!-- Navbar with current channel name and logout button -->
-    <top-bar :currentChannel="currentChannel" :signout="signout"></top-bar>
+    <top-bar :currentChannel="currentChannel" :signout="handleSignout"></top-bar>
 
     <!-- Main screen with messages and text box -->
     <v-container class="fill-height no-marg" fluid>
       <v-col class="text-center no-marg" align-self="end">
         <v-row v-for="m in messages" :key="m.ID" no-gutters="">
-          <message-view :message="m" :usersInChannel="usersInChannel" />
+          <message-view :message="m" :usersInChannel="usersInChannel" :startSidebar="startSidebar"/>
         </v-row>
         <v-row no-gutters align="end">
-          <message-input :send="send"></message-input>
+          <message-input :send="send" :users="usersInChannel"></message-input>
         </v-row>
       </v-col>
     </v-container>
@@ -30,7 +26,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import Sidebar from "@/components/Sidebar.vue";
 import NewChannel from "@/components/NewChannel.vue";
 import TopBar from "@/components/TopBar.vue";
@@ -51,6 +47,7 @@ export default {
     ...mapState(["user", "usersInChannel", "channels", "messages"])
   },
   methods: {
+    ...mapActions(["signout"]),
     // send a message to the chat
     send(message) {
       if (message !== "") {
@@ -67,8 +64,10 @@ export default {
       this.newChannel = false;
     },
     // handle user signing out
-    signout() {
+    handleSignout() {
+      this.signout();
       console.log("signing out");
+      this.$router.push("/login");
     },
     // change the current channel
     changeChannel(chan) {
@@ -77,14 +76,15 @@ export default {
     // open the overlay for creating a new channel
     openNewChannel() {
       this.newChannel = true;
+    },
+    startSidebar() {
+      console.log("starting a sidebar");
     }
   }
 };
 </script>
 
 <style lang="sass">
-@import '~vuetify/src/styles/styles.sass'
-
 .no-marg
   padding: 0pt
 

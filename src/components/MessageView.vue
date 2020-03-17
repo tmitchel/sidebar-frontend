@@ -14,8 +14,8 @@
               {{ message.Content }}
             </v-card-text>
           </v-col>
-          <v-col v-if="hover">
-            <v-btn icon v-if="hover" class="mt-0">
+          <v-col v-if="hover" class="pl-0">
+            <v-btn @click.prevent="startSidebar" icon class="mt-0">
               <v-icon>mdi-database-plus</v-icon>
             </v-btn>
           </v-col>
@@ -28,6 +28,6 @@
 <script>
 export default {
   name: "MessageView",
-  props: ["message", "usersInChannel"]
+  props: ["message", "usersInChannel", "startSidebar"]
 };
 </script>
