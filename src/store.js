@@ -13,7 +13,9 @@ const socket = new WebSocket("ws://localhost:8080/ws");
 function createWebSocketPlugin(socket) {
   return store => {
     socket.onmessage = event => {
-      new Response(event.data).json().then(msg => store.commit("messages", msg));
+      new Response(event.data)
+        .json()
+        .then(msg => store.commit("messages", msg));
     };
     store.subscribe(mut => {
       if (mut.type === "sendMessages") {
@@ -55,11 +57,19 @@ export default new Vuex.Store({
         Parent: 1
       }
     ],
+    event: {
+      ID: 4,
+      Event: 2,
+      Content: "",
+      ToUser: 0,
+      FromUser: 1,
+      Channel: 1
+    },
     messages: [
       {
         ID: 1,
         Event: 1,
-        Content: "Message One",
+        Content: "Message One 😀",
         ToUser: 0,
         FromUser: 1,
         Channel: 1

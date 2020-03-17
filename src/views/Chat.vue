@@ -18,7 +18,7 @@
           <message-view :message="m" :usersInChannel="usersInChannel" :startSidebar="startSidebar"/>
         </v-row>
         <v-row no-gutters align="end">
-          <message-input :send="send" :users="usersInChannel"></message-input>
+          <message-input :send="send" :users="usersInChannel" :typing="handleTyping" :typer="event"></message-input>
         </v-row>
       </v-col>
     </v-container>
@@ -41,10 +41,11 @@ export default {
   },
   data: () => ({
     currentChannel: "",
-    newChannel: false
+    newChannel: false,
+    typer: null
   }),
   computed: {
-    ...mapState(["user", "usersInChannel", "channels", "messages"])
+    ...mapState(["user", "usersInChannel", "channels", "messages", "event"])
   },
   methods: {
     ...mapActions(["signout"]),
@@ -79,6 +80,9 @@ export default {
     },
     startSidebar() {
       console.log("starting a sidebar");
+    },
+    handleTyping() {
+      console.log("typing now");
     }
   }
 };

@@ -2,12 +2,13 @@
   <v-card style="width: 100%;" color="#616161" tile>
     <v-textarea
       @keypress.enter.prevent="handleSend"
+      @keypress="typing"
       v-model="message"
       class="custom-class"
       dense
       solo
       flat
-      rows="4"
+      rows="3"
       name="input-7-1"
       auto-grow
       hide-details=""
@@ -44,13 +45,16 @@
         </v-btn-toggle>
       </template>
     </v-textarea>
+    <v-sheet v-if="typer && typer.Event === 2" class="text-left pl-3">
+      {{ users[typer.FromUser].Username }} is typing...
+    </v-sheet>
   </v-card>
 </template>
 
 <script>
 export default {
   name: "MessageInput",
-  props: ["send", "users"],
+  props: ["send", "users", "typing", "typer"],
   data: () => ({
     message: "",
     meh: ""

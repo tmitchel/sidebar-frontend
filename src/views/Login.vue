@@ -36,7 +36,7 @@ export default {
     },
     login(email, password) {
       console.log(`logging in with ${email} ${password}`);
-      this.$router.push("/chat");
+      this.$router.push("/");
     },
     submit(username, email, password) {
       console.log(`creating user with ${username} ${email} ${password}`);
