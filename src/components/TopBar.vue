@@ -3,7 +3,7 @@
     <v-avatar color="primary">
       <v-icon dark x-large>mdi-account-circle</v-icon>
     </v-avatar>
-    <v-toolbar-title>{{ currentChannel }}</v-toolbar-title>
+    <v-toolbar-title>{{ currentChannel.Name }}</v-toolbar-title>
     <v-spacer />
     <v-btn text x-large @click.prevent="signout">Sign Out</v-btn>
   </v-app-bar>

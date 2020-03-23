@@ -8,10 +8,10 @@
               <v-avatar size="36" color="primary">
                 <v-icon dark>mdi-account-circle</v-icon>
               </v-avatar>
-              {{ usersInChannel[message.FromUser].Username }}
+              {{ message.user_info.display_name }}
             </v-card-subtitle>
             <v-card-text class="text-left pb-0">
-              {{ message.Content }}
+              {{ message.content }}
             </v-card-text>
           </v-col>
           <v-col v-if="hover" class="pl-0">

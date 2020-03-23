@@ -16,7 +16,7 @@
     >
       <template v-slot:append>
         <v-btn-toggle borderless="">
-          <v-menu top offset-y :return-value="meh">
+          <v-menu top offset-y>
             <template v-slot:activator="{ on }">
               <v-btn dark icon v-on="on">
                 <v-btn dark icon class="title">@</v-btn>
@@ -26,9 +26,9 @@
               <v-list-item
                 v-for="user in users"
                 :key="user.ID"
-                @click.prevent="addAt(user.Username)"
+                @click.prevent="addAt(user.display_name)"
               >
-                <v-list-item-title>{{ user.Username }}</v-list-item-title>
+                <v-list-item-title>{{ user.display_name }}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -46,7 +46,7 @@
       </template>
     </v-textarea>
     <v-sheet v-if="typer && typer.Event === 2" class="text-left pl-3">
-      {{ users[typer.FromUser].Username }} is typing...
+      {{ users[typer.FromUser].display_name }} is typing...
     </v-sheet>
   </v-card>
 </template>
@@ -57,7 +57,6 @@ export default {
   props: ["send", "users", "typing", "typer"],
   data: () => ({
     message: "",
-    meh: ""
   }),
   methods: {
     handleSend() {

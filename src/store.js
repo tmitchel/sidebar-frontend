@@ -4,39 +4,48 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 const basepath = "http://localhost:8080";
 const defaultUser = {
-  ID: 1,
+  id: -1,
   Username: "Default User",
   Email: "user@email.com"
 };
 
-const socket = new WebSocket("ws://localhost:8080/ws");
-function createWebSocketPlugin(socket) {
+export function createWebSocketPlugin(socket) {
   return store => {
     socket.onmessage = event => {
-      new Response(event.data)
-        .json()
-        .then(msg => store.commit("messages", msg));
+      console.log("got message");
+      new Response(event.data).json().then(msg => {
+        let new_messages = store.state.messages;
+        new_messages.push(msg);
+        store.commit("messages", new_messages);
+      });
     };
     store.subscribe(mut => {
       if (mut.type === "sendMessages") {
-        socket.send(mut.payload.Text);
+        socket.send(JSON.stringify(mut.payload));
+        console.log("sent message");
+        console.log(mut.payload);
       }
     });
   };
 }
 
 export default new Vuex.Store({
-  plugins: [createWebSocketPlugin(socket)],
   state: {
     user: defaultUser,
-    usersInChannel: {
-      1: defaultUser,
-      2: {
-        ID: 2,
+    currentChannel: {
+      ID: 1,
+      Name: "Channel One",
+      IsSidebar: false,
+      Parent: 0
+    },
+    usersInChannel: [
+      defaultUser,
+      {
+        id: 2,
         Username: "Other user",
         Email: "other@email.com"
       }
-    },
+    ],
     channels: [
       {
         ID: 1,
@@ -104,46 +113,95 @@ export default new Vuex.Store({
     },
     users(state, usersInChannel) {
       state.usersInChannel = usersInChannel;
-    }
+    },
+    updateCurrentChannel(state, channel) {
+      state.currentChannel = channel;
+    },
+    sendMessages() {}
   },
   actions: {
+    loadChannel({ commit }, id) {
+      fetch(`${basepath}/api/load_channel/${id}`, {
+        method: "GET",
+        credentials: "include"
+      })
+        .then(resp => {
+          resp.json().then(resp => {
+            commit("messages", resp.MessagesInChannel);
+            commit("updateCurrentChannel", resp.Channel);
+            commit("users", resp.UsersInChannel);
+          });
+        })
+        .catch(err => console.log(err));
+    },
     getMessages({ commit }, id) {
-      fetch(`${basepath}/messages/channel=${id}`).then(resp => {
+      fetch(`${basepath}/api/messages?channel=${id}`, {
+        method: "GET",
+        credentials: "include"
+      }).then(resp => {
         resp.json().then(resp => {
           commit("messages", resp);
         });
       });
     },
     getChannels({ commit }) {
-      fetch(`${basepath}/channels`).then(resp => {
+      fetch(`${basepath}/api/channels`, {
+        method: "GET",
+        credentials: "include"
+      }).then(resp => {
         resp.json().then(resp => {
           commit("channels", resp);
         });
       });
     },
     getUsers({ commit }) {
-      fetch(`${basepath}/users`).then(resp => {
+      fetch(`${basepath}/api/users`, {
+        method: "GET",
+        credentials: "include"
+      }).then(resp => {
         resp.json().then(resp => {
           commit("users", resp);
         });
       });
     },
-    login({ commit }, email, password) {
-      fetch(`${basepath}/login`, {
-        method: "POST",
-        mode: "cors",
-        body: JSON.stringify({
-          email: email,
-          password: password
+    login({ commit }, payload) {
+      return new Promise((res, rej) => {
+        fetch(`${basepath}/login`, {
+          method: "POST",
+          mode: "cors",
+          credentials: "include",
+          body: JSON.stringify(payload)
         })
-      }).then(resp => {
-        resp.json().then(resp => {
-          commit("updateUser", resp);
-        });
+          .then(resp => {
+            if (resp.status !== 200) {
+              rej();
+              return;
+            }
+            resp.json().then(resp => {
+              commit("updateUser", resp);
+              res();
+            });
+          })
+          .catch(() => rej());
       });
     },
     signout({ commit }) {
       commit("updateUser", defaultUser);
+    },
+    refreshToken() {
+      return new Promise((res, rej) => {
+        fetch(`${basepath}/api/refresh_token`, {
+          method: "POST",
+          mode: "cors",
+          credentials: "include"
+        }).then(resp => {
+          if (resp.status === 200) {
+            res();
+            return;
+          }
+          rej();
+        });
+      });
     }
   }
 });

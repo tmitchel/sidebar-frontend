@@ -3,7 +3,7 @@
     <v-container class="fill-height" fluid>
       <v-row align="center" justify="center">
         <v-col cols="12" sm="8" md="4">
-          <login-box :login="login" :signup="openSignup"></login-box>
+          <login-box :login="handleLogin" :signup="openSignup"></login-box>
           <v-overlay
             :absolute="false"
             opacity=".86"
@@ -21,6 +21,8 @@
 <script>
 import LoginBox from "@/components/LoginBox.vue";
 import NewUser from "@/components/NewUser.vue";
+import { mapActions } from "vuex";
+import store, { createWebSocketPlugin } from "@/store.js";
 
 export default {
   props: {
@@ -28,15 +30,23 @@ export default {
   },
   components: { LoginBox, NewUser },
   data: () => ({
-    signup: false
+    signup: false,
+    errored: false
   }),
   methods: {
+    ...mapActions(["login", "getUsers"]),
     openSignup() {
       this.signup = true;
     },
-    login(email, password) {
-      console.log(`logging in with ${email} ${password}`);
-      this.$router.push("/");
+    async handleLogin(email, password) {
+      console.log(`Logging in with ${email} ${password}`);
+      await this.login({ email, password })
+        .then(() => {
+          this.$router.push("/");
+        })
+        .catch(() => (this.errored = true));
+      const socket = new WebSocket("ws://localhost:8080/ws");
+      createWebSocketPlugin(socket)(store);
     },
     submit(username, email, password) {
       console.log(`creating user with ${username} ${email} ${password}`);
