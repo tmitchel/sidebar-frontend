@@ -70,7 +70,6 @@ export default {
       "currentChannel"
     ]),
     findMatches() {
-      console.log(this.$router.history.current.params["channel"]);
       let match = this.messages;
       for (let i = 0; i < this.messages.length; i++) {
         const user = this.usersInChannel.find(
@@ -89,12 +88,11 @@ export default {
     clearInterval(this.timer);
   },
   methods: {
-    ...mapActions(["signout", "loadChannel", "refreshToken"]),
+    ...mapActions(["signout", "loadChannel", "refreshToken", "createChannel"]),
     ...mapMutations(["sendMessages"]),
     // send a message to the chat
     send(message) {
       if (message !== "") {
-        console.log(message);
         this.sendMessages({
           event: 1,
           content: message,
@@ -109,9 +107,13 @@ export default {
       this.newChannel = false;
     },
     // submit the form for creating a new channel
-    submit(newName) {
+    async submit(newName) {
       console.log(`Creating new channel: ${newName}`);
       this.newChannel = false;
+      await this.createChannel({
+        Name: newName
+      });
+      this.$router.push(`/chat/${this.currentChannel.id}`);
     },
     // handle user signing out
     handleSignout() {

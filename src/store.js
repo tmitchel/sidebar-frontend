@@ -23,7 +23,6 @@ export function createWebSocketPlugin(socket) {
       if (mut.type === "sendMessages") {
         socket.send(JSON.stringify(mut.payload));
         console.log("sent message");
-        console.log(mut.payload);
       }
     });
   };
@@ -32,74 +31,12 @@ export function createWebSocketPlugin(socket) {
 export default new Vuex.Store({
   state: {
     user: defaultUser,
-    currentChannel: {
-      ID: 1,
-      Name: "Channel One",
-      IsSidebar: false,
-      Parent: 0
-    },
-    usersInChannel: [
-      defaultUser,
-      {
-        id: 2,
-        Username: "Other user",
-        Email: "other@email.com"
-      }
-    ],
-    channels: [
-      {
-        ID: 1,
-        Name: "Channel One",
-        IsSidebar: false,
-        Parent: 0
-      },
-      {
-        ID: 2,
-        Name: "Channel Two",
-        IsSidebar: false,
-        Parent: 0
-      },
-      {
-        ID: 3,
-        Name: "Channel Three",
-        IsSidebar: true,
-        Parent: 1
-      }
-    ],
-    event: {
-      ID: 4,
-      Event: 2,
-      Content: "",
-      ToUser: 0,
-      FromUser: 1,
-      Channel: 1
-    },
-    messages: [
-      {
-        ID: 1,
-        Event: 1,
-        Content: "Message One 😀",
-        ToUser: 0,
-        FromUser: 1,
-        Channel: 1
-      },
-      {
-        ID: 2,
-        Event: 1,
-        Content: "Message Two",
-        ToUser: 0,
-        FromUser: 1,
-        Channel: 1
-      },
-      {
-        ID: 3,
-        Event: 1,
-        Content: "Message Three",
-        ToUser: 0,
-        FromUser: 1,
-        Channel: 1
-      }
-    ]
+    currentChannel: {},
+    usersInChannel: [],
+    messages: [],
+    channels: [],
+    channelsForUser: [],
+    event: {}
   },
   mutations: {
     updateUser(state, user) {
@@ -117,9 +54,50 @@ export default new Vuex.Store({
     updateCurrentChannel(state, channel) {
       state.currentChannel = channel;
     },
+    channelsForUser(state, channels) {
+      state.channelsForUser = channels;
+    },
+    addChannel(state, channel) {
+      state.channelsForUser.push(channel);
+      state.channels.push(channel);
+    },
     sendMessages() {}
   },
   actions: {
+    createChannel({ commit }, channel) {
+      return new Promise((res, rej) => {
+        fetch(`${basepath}/api/channel`, {
+          method: "POST",
+          mode: "cors",
+          credentials: "include",
+          body: JSON.stringify(channel)
+        }).then(resp => {
+          if (resp.status !== 200) {
+            rej();
+            return;
+          }
+          resp.json().then(resp => {
+            commit("addChannel", resp);
+            commit("updateCurrentChannel", resp);
+            res();
+          });
+        });
+      });
+    },
+    loadUser({ commit }, id) {
+      fetch(`${basepath}/api/load_user/${id}`, {
+        method: "GET",
+        credentials: "include"
+      })
+        .then(resp => {
+          resp.json().then(resp => {
+            commit("updateUser", resp.User || {});
+            commit("channelsForUser", resp.ChannelsForUser || []);
+            commit("channels", resp.Channels || []);
+          });
+        })
+        .catch(err => console.log(err));
+    },
     loadChannel({ commit }, id) {
       fetch(`${basepath}/api/load_channel/${id}`, {
         method: "GET",
@@ -127,9 +105,9 @@ export default new Vuex.Store({
       })
         .then(resp => {
           resp.json().then(resp => {
-            commit("messages", resp.MessagesInChannel);
-            commit("updateCurrentChannel", resp.Channel);
-            commit("users", resp.UsersInChannel);
+            commit("messages", resp.MessagesInChannel || []);
+            commit("updateCurrentChannel", resp.Channel || {});
+            commit("users", resp.UsersInChannel || []);
           });
         })
         .catch(err => console.log(err));
@@ -195,7 +173,7 @@ export default new Vuex.Store({
           mode: "cors",
           credentials: "include"
         }).then(resp => {
-          if (resp.status === 200) {
+          if (resp.status === 200 || resp.status == 425) {
             res();
             return;
           }
