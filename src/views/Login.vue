@@ -45,7 +45,11 @@ export default {
           this.$router.push("/");
         })
         .catch(() => (this.errored = true));
-      const socket = new WebSocket("ws://localhost:8080/ws");
+      const websocket_path =
+        process.env.NODE_ENV === "development"
+          ? "ws://localhost:8080/ws"
+          : "wss://sidebar-backend.herokuapp.com/ws";
+      const socket = new WebSocket(websocket_path);
       createWebSocketPlugin(socket)(store);
     },
     submit(username, email, password) {
