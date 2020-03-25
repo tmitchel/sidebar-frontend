@@ -56,7 +56,7 @@ export default {
   name: "MessageInput",
   props: ["send", "users", "typing", "typer"],
   data: () => ({
-    message: "",
+    message: ""
   }),
   methods: {
     handleSend() {

@@ -123,8 +123,10 @@ export default {
     },
     // change the current channel
     changeChannel(chan) {
-      this.$router.push(`/chat/${chan.ID}`);
-      this.loadChannel(chan.ID);
+      if (this.$router.history.current.path !== `/chat/${chan.ID}`) {
+        this.$router.push(`/chat/${chan.ID}`);
+        this.loadChannel(chan.ID);
+      }
     },
     // open the overlay for creating a new channel
     openNewChannel() {
