@@ -2,7 +2,7 @@
   <v-container class="fill-height no-marg" fluid>
     <!-- Left panel showing channels -->
     <sidebar
-      :channels="channels"
+      :channels="channelsForUser"
       :changeChannel="changeChannel"
       :newChannel="openNewChannel"
     />
@@ -64,10 +64,10 @@ export default {
     ...mapState([
       "user",
       "usersInChannel",
-      "channels",
       "messages",
       "event",
-      "currentChannel"
+      "currentChannel",
+      "channelsForUser"
     ]),
     findMatches() {
       let match = this.messages;

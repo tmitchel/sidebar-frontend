@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 
 Vue.use(Vuex);
-const basepath = "http://localhost:8080";
+const basepath = process.env.NODE_ENV === "development" ? "http://localhost:8080" : "https://zeit.co/tmitchel/sidebar-frontend/i6s0uuohb";
 const defaultUser = {
   id: -1,
   Username: "Default User",
