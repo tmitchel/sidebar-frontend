@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 
 Vue.use(Vuex);
-const basepath = process.env.NODE_ENV === "development" ? "http://localhost:8080" : "https://sidebar-backend.herokuapp.com/";
+const basepath = process.env.NODE_ENV === "development" ? "http://localhost:8080" : "https://sidebar-backend.herokuapp.com";
 const defaultUser = {
   id: -1,
   Username: "Default User",
