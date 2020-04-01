@@ -4,7 +4,7 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 const basepath =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:8080"
+    ? "https://localhost:8080"
     : "https://sidebar-backend.herokuapp.com";
 const defaultUser = {
   id: -1,
@@ -87,6 +87,41 @@ export default new Vuex.Store({
         });
       });
     },
+    createSidebar(_, { parent, name, user }) {
+      return new Promise((res, rej) => {
+        fetch(`${basepath}/api/sidebar/${parent}/${user}`, {
+          method: "POST",
+          mode: "cors",
+          credentials: "include",
+          body: JSON.stringify({ Name: name })
+        })
+          .then(resp => {
+            if (resp.status !== 200) {
+              rej();
+              return;
+            }
+            res();
+          })
+          .catch(() => rej());
+      });
+    },
+    addUserToChannel(_, { user_id, channel_id }) {
+      return new Promise((res, rej) => {
+        fetch(`${basepath}/api/add/${user_id}/${channel_id}`, {
+          method: "POST",
+          mode: "cors",
+          credentials: "include"
+        })
+          .then(resp => {
+            if (resp.status !== 200) {
+              rej();
+              return;
+            }
+            res();
+          })
+          .catch(() => rej());
+      });
+    },
     loadUser({ commit }, id) {
       fetch(`${basepath}/api/load_user/${id}`, {
         method: "GET",
@@ -114,36 +149,6 @@ export default new Vuex.Store({
           });
         })
         .catch(err => console.log(err));
-    },
-    getMessages({ commit }, id) {
-      fetch(`${basepath}/api/messages?channel=${id}`, {
-        method: "GET",
-        credentials: "include"
-      }).then(resp => {
-        resp.json().then(resp => {
-          commit("messages", resp);
-        });
-      });
-    },
-    getChannels({ commit }) {
-      fetch(`${basepath}/api/channels`, {
-        method: "GET",
-        credentials: "include"
-      }).then(resp => {
-        resp.json().then(resp => {
-          commit("channels", resp);
-        });
-      });
-    },
-    getUsers({ commit }) {
-      fetch(`${basepath}/api/users`, {
-        method: "GET",
-        credentials: "include"
-      }).then(resp => {
-        resp.json().then(resp => {
-          commit("users", resp);
-        });
-      });
     },
     login({ commit }, payload) {
       return new Promise((res, rej) => {

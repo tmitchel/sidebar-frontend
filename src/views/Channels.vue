@@ -25,13 +25,13 @@ export default {
     channel: ""
   }),
   computed: {
-    ...mapState(["channels"])
+    ...mapState(["channels", "user"])
   },
   methods: {
-    ...mapActions(["getChannels"])
+    ...mapActions(["loadUser"])
   },
   async created() {
-    await this.getChannels();
+    await this.loadUser(this.user.id);
   }
 };
 </script>

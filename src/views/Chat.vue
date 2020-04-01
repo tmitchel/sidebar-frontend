@@ -16,6 +16,8 @@
     <top-bar
       :currentChannel="currentChannel"
       :signout="handleSignout"
+      :channelsForUser="channelsForUser"
+      :addUser="addUser"
     ></top-bar>
 
     <!-- Main screen with messages and text box -->
@@ -88,7 +90,15 @@ export default {
     clearInterval(this.timer);
   },
   methods: {
-    ...mapActions(["signout", "loadChannel", "refreshToken", "createChannel"]),
+    ...mapActions([
+      "signout",
+      "loadChannel",
+      "loadUser",
+      "refreshToken",
+      "createChannel",
+      "createSidebar",
+      "addUserToChannel"
+    ]),
     ...mapMutations(["sendMessages"]),
     // send a message to the chat
     send(message) {
@@ -132,11 +142,24 @@ export default {
     openNewChannel() {
       this.newChannel = true;
     },
-    startSidebar() {
+    async startSidebar() {
       console.log("starting a sidebar");
+      await this.createSidebar({
+        parent: this.currentChannel.ID,
+        name: `Sidebar: ${this.currentChannel.Name}`,
+        user: this.user.id
+      });
+      await this.loadUser(this.user.id);
     },
     handleTyping() {
       console.log("typing now");
+    },
+    async addUser(channel_id) {
+      await this.addUserToChannel({
+        user_id: this.user.id,
+        channel_id: channel_id
+      });
+      await this.loadChannel(this.$router.history.current.params["channel"]);
     }
   }
 };

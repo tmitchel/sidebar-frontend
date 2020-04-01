@@ -34,7 +34,7 @@ export default {
     errored: false
   }),
   methods: {
-    ...mapActions(["login", "getUsers"]),
+    ...mapActions(["login"]),
     openSignup() {
       this.signup = true;
     },
@@ -47,7 +47,7 @@ export default {
         .catch(() => (this.errored = true));
       const websocket_path =
         process.env.NODE_ENV === "development"
-          ? "ws://localhost:8080/ws"
+          ? "wss://localhost:8080/ws"
           : "wss://sidebar-backend.herokuapp.com/ws";
       const socket = new WebSocket(websocket_path);
       createWebSocketPlugin(socket)(store);
