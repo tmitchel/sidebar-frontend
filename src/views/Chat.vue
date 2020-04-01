@@ -5,6 +5,7 @@
       :channels="channelsForUser"
       :changeChannel="changeChannel"
       :newChannel="openNewChannel"
+      :user="user"
     />
 
     <!-- Overlay for creating a new channel -->
@@ -142,11 +143,11 @@ export default {
     openNewChannel() {
       this.newChannel = true;
     },
-    async startSidebar() {
+    async startSidebar(message) {
       console.log("starting a sidebar");
       await this.createSidebar({
-        parent: this.currentChannel.ID,
-        name: `Sidebar: ${this.currentChannel.Name}`,
+        parent: message.id,
+        name: `Sidebar: ${message.content}`,
         user: this.user.id
       });
       await this.loadUser(this.user.id);
@@ -160,6 +161,7 @@ export default {
         channel_id: channel_id
       });
       await this.loadChannel(this.$router.history.current.params["channel"]);
+      await this.loadUser(this.user.id);
     }
   }
 };

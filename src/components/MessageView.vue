@@ -15,7 +15,7 @@
             </v-card-text>
           </v-col>
           <v-col v-if="hover" class="pl-0">
-            <v-btn @click.prevent="startSidebar" icon class="mt-0">
+            <v-btn @click.prevent="startSidebar(message)" icon class="mt-0">
               <v-icon>mdi-database-plus</v-icon>
             </v-btn>
           </v-col>
