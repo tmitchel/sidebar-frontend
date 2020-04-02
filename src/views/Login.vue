@@ -39,7 +39,6 @@ export default {
       this.signup = true;
     },
     async handleLogin(email, password) {
-      console.log(`Logging in with ${email} ${password}`);
       await this.login({ email, password })
         .then(() => {
           this.$router.push("/");

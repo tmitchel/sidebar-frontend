@@ -114,7 +114,9 @@ export default {
   props: ["channels", "changeChannel", "newChannel", "user"],
   computed: {
     chans() {
-      return this.channels.filter(c => c.IsSidebar === false && c.Direct === false);
+      return this.channels.filter(
+        c => c.IsSidebar === false && c.Direct === false
+      );
     },
     sidebars() {
       return this.channels.filter(c => c.IsSidebar === true);

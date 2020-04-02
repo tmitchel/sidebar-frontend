@@ -3,7 +3,11 @@
     <v-card-title>New User</v-card-title>
     <v-container>
       <v-form>
-        <v-text-field v-model="username" label="Display Name" required></v-text-field>
+        <v-text-field
+          v-model="username"
+          label="Display Name"
+          required
+        ></v-text-field>
         <v-text-field v-model="email" label="Email" required></v-text-field>
         <v-text-field
           v-model="password"
@@ -17,7 +21,9 @@
       </v-form>
     </v-container>
     <v-card-actions>
-      <v-btn @click.prevent="submit(username, email, password, token)">Submit</v-btn>
+      <v-btn @click.prevent="submit(username, email, password, token)"
+        >Submit</v-btn
+      >
       <v-btn @click.prevent="close">Cancel</v-btn>
     </v-card-actions>
   </v-card>

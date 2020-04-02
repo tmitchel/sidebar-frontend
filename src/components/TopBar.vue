@@ -31,7 +31,6 @@
           @click.prevent="opt.action"
           v-for="(opt, i) in settings"
           :key="i + options.length"
-          :inactive="opt.enabled"
         >
           <v-list-item-title>{{ opt.text }}</v-list-item-title>
         </v-list-item>
@@ -43,10 +42,20 @@
 <script>
 export default {
   name: "TopBar",
-  props: ["currentChannel", "channelsForUser", "addUser", "signout"],
+  props: [
+    "currentChannel",
+    "channelsForUser",
+    "addUser",
+    "leaveChannel",
+    "signout"
+  ],
   methods: {
     handleAdd() {
       this.addUser(this.currentChannel.ID);
+    },
+    handleLeave() {
+      this.leaveChannel(this.currentChannel.ID);
+      this.$router.push("/");
     }
   },
   computed: {
@@ -54,18 +63,15 @@ export default {
       let opts = [
         {
           text: "Mute Channel",
-          action: () => null,
-          enabled: false
+          action: () => null
         },
         {
           text: "Channel Preferences",
-          action: () => null,
-          enabled: false
+          action: () => null
         },
         {
           text: "Leave Channel",
-          action: () => null,
-          enabled: false
+          action: this.handleLeave
         }
       ];
 
@@ -75,8 +81,7 @@ export default {
       ) {
         opts.unshift({
           text: "Join Channel",
-          action: this.handleAdd,
-          enabled: true
+          action: this.handleAdd
         });
       }
 

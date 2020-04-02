@@ -140,6 +140,23 @@ export default new Vuex.Store({
           .catch(() => rej());
       });
     },
+    removeUserFromChannel(_, { user_id, channel_id }) {
+      return new Promise((res, rej) => {
+        fetch(`${basepath}/api/leave/${user_id}/${channel_id}`, {
+          method: "DELETE",
+          mode: "cors",
+          credentials: "include"
+        })
+          .then(resp => {
+            if (resp.status !== 200) {
+              rej();
+              return;
+            }
+            res();
+          })
+          .catch(() => rej());
+      });
+    },
     loadUser({ commit }, id) {
       fetch(`${basepath}/api/load_user/${id}`, {
         method: "GET",

@@ -18,7 +18,9 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <v-btn @click.prevent="login(email, password)" color="primary">Login</v-btn>
+      <v-btn @click.prevent="login(email, password)" color="primary"
+        >Login</v-btn
+      >
       <v-btn color="primary" @click.prevent="signup">Sign Up</v-btn>
     </v-card-actions>
   </v-card>

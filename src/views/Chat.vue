@@ -19,6 +19,7 @@
       :signout="handleSignout"
       :channelsForUser="channelsForUser"
       :addUser="addUser"
+      :leaveChannel="leaveChannel"
     ></top-bar>
 
     <!-- Main screen with messages and text box -->
@@ -100,7 +101,8 @@ export default {
       "createChannel",
       "createSidebar",
       "createDirect",
-      "addUserToChannel"
+      "addUserToChannel",
+      "removeUserFromChannel"
     ]),
     ...mapMutations(["sendMessages"]),
     // send a message to the chat
@@ -121,7 +123,6 @@ export default {
     },
     // submit the form for creating a new channel
     async submit(newName) {
-      console.log(`Creating new channel: ${newName}`);
       this.newChannel = false;
       await this.createChannel({
         Name: newName
@@ -131,7 +132,6 @@ export default {
     // handle user signing out
     handleSignout() {
       this.signout();
-      console.log("signing out");
       this.$router.push("/login");
     },
     // change the current channel
@@ -146,7 +146,6 @@ export default {
       this.newChannel = true;
     },
     async startSidebar(message) {
-      console.log("starting a sidebar");
       await this.createSidebar({
         parent: message.id,
         name: `Sidebar: ${message.content}`,
@@ -155,8 +154,6 @@ export default {
       await this.loadUser(this.user.id);
     },
     async startDirect(message) {
-      console.log("starting direct with");
-      console.log(message);
       await this.createDirect({
         to_id: message.user_info.id,
         from_id: this.user.id,
@@ -166,6 +163,13 @@ export default {
     },
     handleTyping() {
       console.log("typing now");
+    },
+    async leaveChannel(channel_id) {
+      await this.removeUserFromChannel({
+        user_id: this.user.id,
+        channel_id: channel_id
+      });
+      await this.loadUser(this.user.id);
     },
     async addUser(channel_id) {
       await this.addUserToChannel({
