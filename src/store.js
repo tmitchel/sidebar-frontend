@@ -87,6 +87,25 @@ export default new Vuex.Store({
         });
       });
     },
+    createDirect(_, { to_id, from_id, name }) {
+      console.log(to_id, from_id, name)
+      return new Promise((res, rej) => {
+        fetch(`${basepath}/api/direct/${to_id}/${from_id}`, {
+          method: "POST",
+          mode: "cors",
+          credentials: "include",
+          body: JSON.stringify({ Name: name })
+        })
+          .then(resp => {
+            if (resp.status !== 200) {
+              rej();
+              return;
+            }
+            res();
+          })
+          .catch(() => rej());
+      });
+    },
     createSidebar(_, { parent, name, user }) {
       return new Promise((res, rej) => {
         fetch(`${basepath}/api/sidebar/${parent}/${user}`, {

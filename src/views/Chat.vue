@@ -29,6 +29,7 @@
             v-if="m.event === 1"
             :message="m"
             :startSidebar="startSidebar"
+            :startDirect="startDirect"
           />
         </v-row>
         <v-row no-gutters align="end">
@@ -98,6 +99,7 @@ export default {
       "refreshToken",
       "createChannel",
       "createSidebar",
+      "createDirect",
       "addUserToChannel"
     ]),
     ...mapMutations(["sendMessages"]),
@@ -149,6 +151,16 @@ export default {
         parent: message.id,
         name: `Sidebar: ${message.content}`,
         user: this.user.id
+      });
+      await this.loadUser(this.user.id);
+    },
+    async startDirect(message) {
+      console.log("starting direct with");
+      console.log(message);
+      await this.createDirect({
+        to_id: message.user_info.id,
+        from_id: this.user.id,
+        name: `Direct: ${message.user_info.display_name}`
       });
       await this.loadUser(this.user.id);
     },

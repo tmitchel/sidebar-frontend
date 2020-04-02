@@ -18,6 +18,9 @@
             <v-btn @click.prevent="startSidebar(message)" icon class="mt-0">
               <v-icon>mdi-database-plus</v-icon>
             </v-btn>
+            <v-btn @click.prevent="startDirect(message)" icon class="mt-0">
+              <v-icon>mdi-message</v-icon>
+            </v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -28,6 +31,6 @@
 <script>
 export default {
   name: "MessageView",
-  props: ["message", "usersInChannel", "startSidebar"]
+  props: ["message", "usersInChannel", "startSidebar", "startDirect"]
 };
 </script>
