@@ -68,10 +68,6 @@ export default {
         {
           text: "Channel Preferences",
           action: () => null
-        },
-        {
-          text: "Leave Channel",
-          action: this.handleLeave
         }
       ];
 
@@ -82,6 +78,11 @@ export default {
         opts.unshift({
           text: "Join Channel",
           action: this.handleAdd
+        });
+      } else {
+        opts.push({
+          text: "Leave Channel",
+          action: this.handleLeave
         });
       }
 

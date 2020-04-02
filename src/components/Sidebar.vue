@@ -96,7 +96,9 @@
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-divider :inset="false"></v-divider>
+    </v-list>
+    <v-divider :inset="false"></v-divider>
+    <v-list desne>
       <v-list-item link>
         <v-list-item-content>
           <v-list-item-title @click.prevent="newChannel">
