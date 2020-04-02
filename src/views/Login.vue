@@ -52,8 +52,10 @@ export default {
       const socket = new WebSocket(websocket_path);
       createWebSocketPlugin(socket)(store);
     },
-    submit(username, email, password) {
-      console.log(`creating user with ${username} ${email} ${password}`);
+    submit(username, email, password, token) {
+      console.log(
+        `creating user with ${username} ${email} ${password} ${token}`
+      );
       this.signup = false;
     },
     close() {

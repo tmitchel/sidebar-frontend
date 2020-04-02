@@ -13,10 +13,11 @@
           @click:append="showPassword = !showPassword"
           required
         ></v-text-field>
+        <v-text-field v-model="token" label="Token" required></v-text-field>
       </v-form>
     </v-container>
     <v-card-actions>
-      <v-btn @click.prevent="submit(username, email, password)">Submit</v-btn>
+      <v-btn @click.prevent="submit(username, email, password, token)">Submit</v-btn>
       <v-btn @click.prevent="close">Cancel</v-btn>
     </v-card-actions>
   </v-card>
@@ -29,6 +30,7 @@ export default {
   data: () => ({
     username: "",
     email: "",
+    token: "",
     password: "",
     showPassword: false
   })
