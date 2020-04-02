@@ -63,7 +63,7 @@ export default {
   computed: {
     ...mapState(["channels", "user"]),
     chans() {
-      return this.channels.filter(c => c.IsSidebar === false);
+      return this.channels.filter(c => c.IsSidebar === false && c.Direct === false);
     },
     sidebars() {
       return this.channels.filter(c => c.IsSidebar === true);

@@ -88,7 +88,6 @@ export default new Vuex.Store({
       });
     },
     createDirect(_, { to_id, from_id, name }) {
-      console.log(to_id, from_id, name)
       return new Promise((res, rej) => {
         fetch(`${basepath}/api/direct/${to_id}/${from_id}`, {
           method: "POST",
