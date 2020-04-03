@@ -50,6 +50,9 @@
         </v-list-item-group>
       </v-list>
     </v-container>
+    <v-container>
+      <v-btn small color="secondary" @click.prevent="back">Cancel</v-btn>
+    </v-container>
   </v-container>
 </template>
 
@@ -75,7 +78,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["loadUser"])
+    ...mapActions(["loadUser"]),
+    back() {
+      this.$router.back();
+    }
   },
   async created() {
     await this.loadUser(this.user.id);

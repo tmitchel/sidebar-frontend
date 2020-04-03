@@ -34,6 +34,12 @@
             @click.prevent="changeChannel(chan)"
             class="font-weight-light"
           >
+            <v-icon v-if="chan.Resolved" dark x-small dense class="mr-1"
+              >mdi-check</v-icon
+            >
+            <v-icon v-else dark x-small dense class="mr-1"
+              >mdi-circle-outline</v-icon
+            >
             <v-badge color="red" dot offset-y="11" offset-x="-5" class="mt-0">
               {{ chan.Name }}
             </v-badge>

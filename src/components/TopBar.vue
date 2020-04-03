@@ -48,7 +48,8 @@ export default {
     "channelsForUser",
     "addUser",
     "leaveChannel",
-    "signout"
+    "signout",
+    "resolve"
   ],
   methods: {
     handleAdd() {
@@ -57,6 +58,9 @@ export default {
     handleLeave() {
       this.leaveChannel(this.currentChannel.ID);
       this.$router.push("/");
+    },
+    handleResolve() {
+      this.resolve(this.currentChannel.ID);
     }
   },
   computed: {
@@ -71,6 +75,13 @@ export default {
           action: () => null
         }
       ];
+
+      if (this.currentChannel.IsSidebar && !this.currentChannel.resolved) {
+        opts.unshift({
+          text: "Mark Resolved",
+          action: this.handleResolve
+        });
+      }
 
       if (
         this.channelsForUser.find(el => this.currentChannel.ID === el.ID) ===

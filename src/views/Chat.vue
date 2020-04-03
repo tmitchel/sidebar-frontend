@@ -25,6 +25,7 @@
       :addUser="addUser"
       :leaveChannel="leaveChannel"
       :newToken="invite"
+      :resolve="handleResolve"
     ></top-bar>
 
     <!-- Main screen with messages and text box -->
@@ -117,7 +118,8 @@ export default {
       "createDirect",
       "addUserToChannel",
       "removeUserFromChannel",
-      "newToken"
+      "newToken",
+      "resolveSidebar"
     ]),
     ...mapMutations(["sendMessages"]),
     // send a message to the chat
@@ -198,6 +200,10 @@ export default {
     async invite() {
       this.newToken = await this.newToken();
       this.Invite = true;
+    },
+    async handleResolve(channel_id) {
+      await this.resolveSidebar(channel_id);
+      await this.loadUser(this.user.id);
     }
   }
 };

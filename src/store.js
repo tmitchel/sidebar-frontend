@@ -242,6 +242,21 @@ export default new Vuex.Store({
           rej();
         });
       });
+    },
+    resolveSidebar(_, channel) {
+      return new Promise((res, rej) => {
+        fetch(`${basepath}/api/resolve/${channel}`, {
+          method: "POST",
+          mode: "cors",
+          credentials: "include"
+        }).then(resp => {
+          if (resp.status !== 200) {
+            rej();
+            return;
+          }
+          res();
+        });
+      });
     }
   }
 });
