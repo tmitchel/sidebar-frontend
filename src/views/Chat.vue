@@ -13,6 +13,10 @@
       <new-channel :close="close" :submit="submit"></new-channel>
     </v-overlay>
 
+    <v-overlay :absolute="false" opacity=".86" :value="Invite" z-index="6">
+      <invitation :close="close" :token="newToken"></invitation>
+    </v-overlay>
+
     <!-- Navbar with current channel name and logout button -->
     <top-bar
       :currentChannel="currentChannel"
@@ -20,6 +24,7 @@
       :channelsForUser="channelsForUser"
       :addUser="addUser"
       :leaveChannel="leaveChannel"
+      :newToken="invite"
     ></top-bar>
 
     <!-- Main screen with messages and text box -->
@@ -33,16 +38,16 @@
             :startDirect="startDirect"
           />
         </v-row>
-        <v-row no-gutters align="end">
-          <message-input
-            :send="send"
-            :users="usersInChannel"
-            :typing="handleTyping"
-            :typer="event"
-          ></message-input>
-        </v-row>
       </v-col>
     </v-container>
+    <v-footer app inset class="pa-0">
+      <message-input
+        :send="send"
+        :users="usersInChannel"
+        :typing="handleTyping"
+        :typer="event"
+      ></message-input>
+    </v-footer>
   </v-container>
 </template>
 
@@ -53,15 +58,24 @@ import NewChannel from "@/components/NewChannel.vue";
 import TopBar from "@/components/TopBar.vue";
 import MessageInput from "@/components/MessageInput.vue";
 import MessageView from "@/components/MessageView.vue";
+import Invitation from "@/components/Invitation.vue";
 
 export default {
   name: "Chat",
-  components: { Sidebar, NewChannel, TopBar, MessageInput, MessageView },
+  components: {
+    Sidebar,
+    NewChannel,
+    TopBar,
+    MessageInput,
+    MessageView,
+    Invitation
+  },
   props: {
     source: String
   },
   data: () => ({
     newChannel: false,
+    Invite: false,
     typer: null,
     timer: null
   }),
@@ -102,7 +116,8 @@ export default {
       "createSidebar",
       "createDirect",
       "addUserToChannel",
-      "removeUserFromChannel"
+      "removeUserFromChannel",
+      "newToken"
     ]),
     ...mapMutations(["sendMessages"]),
     // send a message to the chat
@@ -120,6 +135,7 @@ export default {
     // close the overlay for creating a new channel
     close() {
       this.newChannel = false;
+      this.Invite = false;
     },
     // submit the form for creating a new channel
     async submit(newName) {
@@ -178,6 +194,10 @@ export default {
       });
       await this.loadChannel(this.$router.history.current.params["channel"]);
       await this.loadUser(this.user.id);
+    },
+    async invite() {
+      this.newToken = await this.newToken();
+      this.Invite = true;
     }
   }
 };

@@ -123,6 +123,25 @@ export default new Vuex.Store({
           .catch(() => rej());
       });
     },
+    newToken() {
+      return new Promise((res, rej) => {
+        fetch(`${basepath}/api/new_token`, {
+          method: "POST",
+          mode: "cors",
+          credentials: "include"
+        })
+          .then(resp => {
+            if (resp.status !== 200) {
+              rej();
+              return;
+            }
+            resp.json().then(resp => {
+              res(resp.Token);
+            });
+          })
+          .catch(() => rej());
+      });
+    },
     addUserToChannel(_, { user_id, channel_id }) {
       return new Promise((res, rej) => {
         fetch(`${basepath}/api/add/${user_id}/${channel_id}`, {

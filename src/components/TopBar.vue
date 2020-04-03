@@ -43,6 +43,7 @@
 export default {
   name: "TopBar",
   props: [
+    "newToken",
     "currentChannel",
     "channelsForUser",
     "addUser",
@@ -91,6 +92,10 @@ export default {
     settings() {
       const vm = this;
       return [
+        {
+          text: "Invite Someone",
+          action: this.newToken
+        },
         {
           text: "Profile",
           action: () => null
