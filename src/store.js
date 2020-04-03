@@ -204,6 +204,27 @@ export default new Vuex.Store({
         })
         .catch(err => console.log(err));
     },
+    signup({ commit }, { token, user }) {
+      return new Promise((res, rej) => {
+        fetch(`${basepath}/api/user/${token}`, {
+          method: "POST",
+          mode: "cors",
+          credentials: "include",
+          body: JSON.stringify(user)
+        })
+          .then(resp => {
+            if (resp.status !== 200) {
+              rej();
+              return;
+            }
+            resp.json().then(resp => {
+              commit("updateUser", resp);
+              res();
+            });
+          })
+          .catch(err => rej(err));
+      });
+    },
     login({ commit }, payload) {
       return new Promise((res, rej) => {
         fetch(`${basepath}/login`, {

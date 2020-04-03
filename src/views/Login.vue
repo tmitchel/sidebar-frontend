@@ -7,7 +7,7 @@
           <v-overlay
             :absolute="false"
             opacity=".86"
-            :value="signup"
+            :value="signupOpen"
             z-index="5"
           >
             <new-user :submit="submit" :close="close"></new-user>
@@ -30,13 +30,13 @@ export default {
   },
   components: { LoginBox, NewUser },
   data: () => ({
-    signup: false,
+    signupOpen: false,
     errored: false
   }),
   methods: {
-    ...mapActions(["login"]),
+    ...mapActions(["login", "signup"]),
     openSignup() {
-      this.signup = true;
+      this.signupOpen = true;
     },
     async handleLogin(email, password) {
       await this.login({ email, password })
@@ -51,14 +51,16 @@ export default {
       const socket = new WebSocket(websocket_path);
       createWebSocketPlugin(socket)(store);
     },
-    submit(username, email, password, token) {
+    async submit(display_name, email, password, token, profile_image) {
+      const user = { display_name, email, password, token, profile_image };
+      await this.signup({ token, user });
       console.log(
-        `creating user with ${username} ${email} ${password} ${token}`
+        `creating user with ${display_name} ${email} ${password} ${token}`
       );
-      this.signup = false;
+      this.signupOpen = false;
     },
     close() {
-      this.signup = false;
+      this.signupOpen = false;
     }
   }
 };

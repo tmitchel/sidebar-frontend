@@ -18,10 +18,12 @@
           required
         ></v-text-field>
         <v-text-field v-model="token" label="Token" required></v-text-field>
+        <v-text-field v-model="profileImg" label="Profile Image"></v-text-field>
       </v-form>
     </v-container>
     <v-card-actions>
-      <v-btn @click.prevent="submit(username, email, password, token)"
+      <v-btn
+        @click.prevent="submit(username, email, password, token, profileImg)"
         >Submit</v-btn
       >
       <v-btn @click.prevent="close">Cancel</v-btn>
@@ -38,7 +40,8 @@ export default {
     email: "",
     token: "",
     password: "",
-    showPassword: false
+    showPassword: false,
+    profileImg: ""
   })
 };
 </script>
