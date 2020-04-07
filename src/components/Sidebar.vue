@@ -86,7 +86,7 @@
       </v-list-item>
       <v-list-item
         link
-        v-for="chan in chans"
+        v-for="chan in basic"
         :key="chan.ID"
         dense
         style="min-height: 35px;"
@@ -96,7 +96,14 @@
             @click.prevent="changeChannel(chan)"
             class="font-weight-light"
           >
-            <v-badge color="red" dot offset-y="11" offset-x="-5" class="mt-0">
+            <v-badge
+              :value="chan.Alert === true"
+              color="red"
+              dot
+              offset-y="11"
+              offset-x="-5"
+              class="mt-0"
+            >
               {{ chan.Name }}
             </v-badge>
           </v-list-item-title>
@@ -119,19 +126,6 @@
 <script>
 export default {
   name: "Sidebar",
-  props: ["channels", "changeChannel", "newChannel", "user"],
-  computed: {
-    chans() {
-      return this.channels.filter(
-        c => c.IsSidebar === false && c.Direct === false
-      );
-    },
-    sidebars() {
-      return this.channels.filter(c => c.IsSidebar === true);
-    },
-    direct() {
-      return this.channels.filter(c => c.Direct === true);
-    }
-  }
+  props: ["changeChannel", "newChannel", "user", "basic", "sidebars", "direct"]
 };
 </script>

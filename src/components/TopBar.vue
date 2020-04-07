@@ -108,10 +108,6 @@ export default {
           action: this.newToken
         },
         {
-          text: "Profile",
-          action: () => null
-        },
-        {
           text: "User Preferences",
           action: function() {
             vm.$router.push("/preferences");
@@ -119,7 +115,9 @@ export default {
         },
         {
           text: "Help",
-          action: () => null
+          action: function() {
+            vm.$router.push("/help");
+          }
         },
         {
           text: "Sign Out",

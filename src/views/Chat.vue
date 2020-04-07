@@ -2,7 +2,9 @@
   <v-container class="fill-height no-marg" fluid>
     <!-- Left panel showing channels -->
     <sidebar
-      :channels="channelsForUser"
+      :basic="basics"
+      :sidebars="sidebars"
+      :direct="directs"
       :changeChannel="changeChannel"
       :newChannel="openNewChannel"
       :user="user"
@@ -33,6 +35,7 @@
       <v-col class="text-center no-marg" align-self="end">
         <v-row v-for="m in findMatches" :key="m.ID" no-gutters="">
           <message-view
+            ref="con"
             v-if="m.event === 1"
             :message="m"
             :startSidebar="startSidebar"
@@ -80,6 +83,10 @@ export default {
     typer: null,
     timer: null
   }),
+  updated() {
+    let bottom = this.$refs.con[this.$refs.con.length - 1];
+    bottom.$vuetify.goTo(bottom, { duration: 0 });
+  },
   computed: {
     ...mapState([
       "user",
@@ -87,7 +94,7 @@ export default {
       "messages",
       "event",
       "currentChannel",
-      "channelsForUser"
+      "channels"
     ]),
     findMatches() {
       let match = this.messages;
@@ -98,11 +105,30 @@ export default {
         match[i].user_info = user;
       }
       return match;
+    },
+    channelsForUser() {
+      return this.channels.filter(c => c.Member === true);
+    },
+    basics() {
+      return this.channels.filter(
+        c => c.Member === true && c.IsSidebar === false && c.Direct === false
+      );
+    },
+    sidebars() {
+      return this.channels.filter(
+        c => c.Member === true && c.IsSidebar === true && c.Direct === false
+      );
+    },
+    directs() {
+      return this.channels.filter(
+        c => c.Member === true && c.IsSidebar === false && c.Direct === true
+      );
     }
   },
   async created() {
     await this.loadChannel(this.$router.history.current.params["channel"]);
     this.timer = setInterval(this.refreshToken, 1000 * 60); // 1 minute
+    this.$vuetify.goTo(500);
   },
   beforeDestroy() {
     clearInterval(this.timer);

@@ -4,6 +4,7 @@ import Login from "./views/Login.vue";
 import Chat from "./views/Chat.vue";
 import Channels from "./views/Channels.vue";
 import Preferences from "./views/Preferences.vue";
+import Help from "./views/Help.vue";
 import store from "@/store.js";
 
 Vue.use(Router);
@@ -33,6 +34,12 @@ export default new Router({
       path: "/preferences",
       name: "preferences",
       component: Preferences,
+      beforeEnter: checkToken
+    },
+    {
+      path: "/help",
+      name: "help",
+      component: Help,
       beforeEnter: checkToken
     }
   ]

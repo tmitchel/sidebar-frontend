@@ -1,11 +1,79 @@
 <template>
   <v-container>
     <h1>Preferences</h1>
+    <v-row>
+      <v-col>
+        <v-form>
+          <v-text-field
+            v-model="display_name"
+            label="Display Name"
+          ></v-text-field>
+          <v-text-field v-model="email" label="Email"></v-text-field>
+          <v-text-field
+            v-model="profile_image"
+            label="Profile Image"
+          ></v-text-field>
+        </v-form>
+      </v-col>
+      <v-col>
+        <v-img
+          class="roundy"
+          contain
+          :src="display_profile_image"
+          width="200"
+        ></v-img>
+        <v-btn
+          small
+          width="100"
+          @click.prevent="display_profile_image = profile_image"
+          >Preview</v-btn
+        >
+        <v-btn small width="100" @click.prevent="undoProfileImage"
+          >Cancel</v-btn
+        >
+      </v-col>
+    </v-row>
+    <v-btn color="primary" @click.prevent="update" class="ma-1">Update</v-btn>
+    <v-btn color="primary" @click.prevent="back" class="ma-1">Cancel</v-btn>
   </v-container>
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
-  name: "Preferences"
+  name: "Preferences",
+  data: () => ({
+    display_name: "",
+    email: "",
+    profile_image: "",
+    display_profile_image: ""
+  }),
+  computed: {
+    ...mapState(["user"])
+  },
+  methods: {
+    back() {
+      this.$router.back();
+    },
+    undoProfileImage() {
+      this.display_profile_image = this.user.profile_image;
+      this.profile_image = this.user.profile_image;
+    },
+    update() {
+      // send to backend
+    }
+  },
+  created() {
+    this.display_name = this.user.display_name;
+    this.email = this.user.email;
+    this.profile_image = this.user.profile_image;
+    this.display_profile_image = this.user.profile_image;
+  }
 };
 </script>
+
+<style>
+.roundy {
+  border-radius: 8px;
+}
+</style>
