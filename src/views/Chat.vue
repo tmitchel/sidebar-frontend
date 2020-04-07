@@ -15,8 +15,14 @@
       <new-channel :close="close" :submit="submit"></new-channel>
     </v-overlay>
 
+    <!-- Overlay for new user token -->
     <v-overlay :absolute="false" opacity=".86" :value="Invite" z-index="6">
       <invitation :close="close" :token="newToken"></invitation>
+    </v-overlay>
+
+    <!-- Overlay with channel preferences -->
+    <v-overlay :absolute="false" opacity=".86" :value="channelPref" z-index="6">
+      <channel-pref :close="close" :submit="submitChannelPref" :channel="currentChannel"></channel-pref>
     </v-overlay>
 
     <!-- Navbar with current channel name and logout button -->
@@ -28,6 +34,7 @@
       :leaveChannel="leaveChannel"
       :newToken="invite"
       :resolve="handleResolve"
+      :openChannelPref="openChannelPref"
     ></top-bar>
 
     <!-- Main screen with messages and text box -->
@@ -63,6 +70,7 @@ import TopBar from "@/components/TopBar.vue";
 import MessageInput from "@/components/MessageInput.vue";
 import MessageView from "@/components/MessageView.vue";
 import Invitation from "@/components/Invitation.vue";
+import ChannelPref from "@/components/ChannelPref.vue";
 
 export default {
   name: "Chat",
@@ -72,7 +80,8 @@ export default {
     TopBar,
     MessageInput,
     MessageView,
-    Invitation
+    Invitation,
+    ChannelPref
   },
   props: {
     source: String
@@ -81,7 +90,8 @@ export default {
     newChannel: false,
     Invite: false,
     typer: null,
-    timer: null
+    timer: null,
+    channelPref: false
   }),
   updated() {
     let bottom = this.$refs.con[this.$refs.con.length - 1];
@@ -164,6 +174,7 @@ export default {
     close() {
       this.newChannel = false;
       this.Invite = false;
+      this.channelPref = false;
     },
     // submit the form for creating a new channel
     async submit(newName) {
@@ -171,7 +182,10 @@ export default {
       await this.createChannel({
         Name: newName
       });
-      this.$router.push(`/chat/${this.currentChannel.id}`);
+      this.$router.push(`/chat/${this.currentChannel.ID}`);
+    },
+    async submitChannelPref(newName) {
+      console.log(`rename channel ${this.currentChannel.ID} from ${this.currentChannel.Name} to ${newName}`);
     },
     // handle user signing out
     handleSignout() {
@@ -188,6 +202,9 @@ export default {
     // open the overlay for creating a new channel
     openNewChannel() {
       this.newChannel = true;
+    },
+    openChannelPref() {
+      this.channelPref = true;
     },
     async startSidebar(message) {
       await this.createSidebar({

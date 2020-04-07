@@ -49,7 +49,8 @@ export default {
     "addUser",
     "leaveChannel",
     "signout",
-    "resolve"
+    "resolve",
+    "openChannelPref"
   ],
   methods: {
     handleAdd() {
@@ -72,7 +73,7 @@ export default {
         },
         {
           text: "Channel Preferences",
-          action: () => null
+          action: this.openChannelPref
         }
       ];
 
