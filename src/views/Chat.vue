@@ -107,6 +107,9 @@ export default {
       "channels"
     ]),
     findMatches() {
+      if (this.messages === undefined) {
+        return [];
+      }
       let match = this.messages;
       for (let i = 0; i < this.messages.length; i++) {
         const user = this.usersInChannel.find(

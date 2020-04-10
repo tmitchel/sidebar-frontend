@@ -1,5 +1,10 @@
 <template>
   <v-container>
+    <!-- Overlay for creating a new channel -->
+    <v-overlay :absolute="false" opacity=".86" :value="newChannel" z-index="6">
+      <new-channel :close="close" :submit="submit"></new-channel>
+    </v-overlay>
+
     <v-container>
       <v-list>
         <v-subheader>Channels</v-subheader>
@@ -51,17 +56,22 @@
       </v-list>
     </v-container>
     <v-container>
-      <v-btn small color="secondary" @click.prevent="back">Cancel</v-btn>
+      <v-btn color="secondary" class="ma-1" @click.prevent="newChannel = true">New Channel</v-btn>
+      <v-btn color="secondary" class="ma-1" @click.prevent="back">Cancel</v-btn>
     </v-container>
   </v-container>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
+import NewChannel from "@/components/NewChannel.vue";
+
 export default {
   name: "Channels",
+  components: { NewChannel },
   data: () => ({
-    channel: ""
+    channel: "",
+    newChannel: false
   }),
   computed: {
     ...mapState(["channels", "user"]),
@@ -78,9 +88,20 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["loadUser"]),
+    ...mapActions(["loadUser", "createChannel"]),
     back() {
       this.$router.back();
+    },
+    // close the overlay for creating a new channel
+    close() {
+      this.newChannel = false;
+    },
+    // submit the form for creating a new channel
+    async submit(newName) {
+      this.newChannel = false;
+      await this.createChannel({
+        Name: newName
+      });
     }
   },
   async created() {
