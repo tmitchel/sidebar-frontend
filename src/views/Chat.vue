@@ -94,8 +94,10 @@ export default {
     channelPref: false
   }),
   updated() {
-    let bottom = this.$refs.con[this.$refs.con.length - 1];
-    bottom.$vuetify.goTo(bottom, { duration: 0 });
+    if (this.$refs.con !== undefined) {
+      let bottom = this.$refs.con[this.$refs.con.length - 1];
+      bottom.$vuetify.goTo(bottom, { duration: 0 });
+    }
   },
   computed: {
     ...mapState([
