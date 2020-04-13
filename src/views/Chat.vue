@@ -22,7 +22,16 @@
 
     <!-- Overlay with channel preferences -->
     <v-overlay :absolute="false" opacity=".86" :value="channelPref" z-index="6">
-      <channel-pref :close="close" :submit="submitChannelPref" :channel="currentChannel"></channel-pref>
+      <channel-pref
+        :close="close"
+        :submit="submitChannelPref"
+        :channel="currentChannel"
+      ></channel-pref>
+    </v-overlay>
+
+    <!-- Overlay for uploading files -->
+    <v-overlay :absolute="false" opacity=".86" :value="uploadFile" z-index="6">
+      <file-upload :close="close" :upload="handleUpload"></file-upload>
     </v-overlay>
 
     <!-- Navbar with current channel name and logout button -->
@@ -57,7 +66,7 @@
         :users="usersInChannel"
         :typing="handleTyping"
         :typer="event"
-        :preview="togglePreview"
+        :fileUpload="toggleFileUpload"
       ></message-input>
     </v-footer>
   </v-container>
@@ -72,6 +81,7 @@ import MessageInput from "@/components/MessageInput.vue";
 import MessageView from "@/components/MessageView.vue";
 import Invitation from "@/components/Invitation.vue";
 import ChannelPref from "@/components/ChannelPref.vue";
+import FileUpload from "@/components/FileUpload.vue";
 
 export default {
   name: "Chat",
@@ -82,7 +92,8 @@ export default {
     MessageInput,
     MessageView,
     Invitation,
-    ChannelPref
+    ChannelPref,
+    FileUpload
   },
   props: {
     source: String
@@ -94,7 +105,7 @@ export default {
     timer: null,
     channelPref: false,
     preview: false,
-    message: ""
+    uploadFile: false
   }),
   updated() {
     if (this.$refs.con !== undefined) {
@@ -183,6 +194,7 @@ export default {
       this.newChannel = false;
       this.Invite = false;
       this.channelPref = false;
+      this.uploadFile = false;
     },
     // submit the form for creating a new channel
     async submit(newName) {
@@ -193,7 +205,9 @@ export default {
       this.$router.push(`/chat/${this.currentChannel.ID}`);
     },
     async submitChannelPref(newName) {
-      console.log(`rename channel ${this.currentChannel.ID} from ${this.currentChannel.Name} to ${newName}`);
+      console.log(
+        `rename channel ${this.currentChannel.ID} from ${this.currentChannel.Name} to ${newName}`
+      );
     },
     // handle user signing out
     handleSignout() {
@@ -256,9 +270,11 @@ export default {
       await this.resolveSidebar(channel_id);
       await this.loadUser(this.user.id);
     },
-    togglePreview(message) {
-      this.message = message;
-      this.preview = !this.preview;
+    toggleFileUpload() {
+      this.uploadFile = !this.uploadFile;
+    },
+    async handleUpload(upFiles) {
+      console.log(`uploading ${upFiles}`);
     }
   }
 };

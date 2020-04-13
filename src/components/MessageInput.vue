@@ -49,6 +49,9 @@
           <v-btn icon @click.prevent="preview = !preview">
             <v-icon>mdi-format-letter-case</v-icon>
           </v-btn>
+          <v-btn icon @click.prevent="fileUpload">
+            <v-icon>mdi-file-document-outline</v-icon>
+          </v-btn>
         </v-btn-toggle>
       </template>
     </v-textarea>
@@ -63,7 +66,7 @@ import marked from "marked";
 
 export default {
   name: "MessageInput",
-  props: ["send", "users", "typing", "typer"],
+  props: ["send", "users", "typing", "typer", "fileUpload"],
   data: () => ({
     message: "",
     preview: false
