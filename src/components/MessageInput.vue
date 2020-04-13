@@ -1,10 +1,14 @@
 <template>
   <v-card style="width: 100%;" color="#616161" tile>
+    <v-container v-if="preview">
+      <div v-html="formattedContent"></div>
+      <v-btn @click.prevent="preview = !preview">Cancel</v-btn>
+    </v-container>
     <v-textarea
+      v-else
       @keypress.enter.prevent="handleSend"
       @keypress="typing"
       v-model="message"
-      class="custom-class"
       dense
       solo
       flat
@@ -42,6 +46,9 @@
               <v-card-text>hi</v-card-text>
             </v-card>
           </v-dialog>
+          <v-btn icon @click.prevent="preview = !preview">
+            <v-icon>mdi-format-letter-case</v-icon>
+          </v-btn>
         </v-btn-toggle>
       </template>
     </v-textarea>
@@ -52,16 +59,28 @@
 </template>
 
 <script>
+import marked from "marked";
+
 export default {
   name: "MessageInput",
   props: ["send", "users", "typing", "typer"],
   data: () => ({
-    message: ""
+    message: "",
+    preview: false
   }),
+  computed: {
+    formattedContent() {
+      return marked(this.message);
+    }
+  },
   methods: {
-    handleSend() {
-      this.send(this.message);
-      this.message = "";
+    handleSend(e) {
+      if (e.shiftKey) {
+        this.message += "\n";
+      } else {
+        this.send(this.message);
+        this.message = "";
+      }
     },
     addAt(username) {
       this.message += `@${username} `;

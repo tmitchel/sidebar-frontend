@@ -57,6 +57,7 @@
         :users="usersInChannel"
         :typing="handleTyping"
         :typer="event"
+        :preview="togglePreview"
       ></message-input>
     </v-footer>
   </v-container>
@@ -91,7 +92,9 @@ export default {
     Invite: false,
     typer: null,
     timer: null,
-    channelPref: false
+    channelPref: false,
+    preview: false,
+    message: ""
   }),
   updated() {
     if (this.$refs.con !== undefined) {
@@ -252,6 +255,10 @@ export default {
     async handleResolve(channel_id) {
       await this.resolveSidebar(channel_id);
       await this.loadUser(this.user.id);
+    },
+    togglePreview(message) {
+      this.message = message;
+      this.preview = !this.preview;
     }
   }
 };

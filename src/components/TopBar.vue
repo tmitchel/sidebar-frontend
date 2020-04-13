@@ -4,6 +4,7 @@
       <v-icon dark x-large>mdi-account-circle</v-icon>
     </v-avatar>
     <v-toolbar-title>{{ currentChannel.Name }}</v-toolbar-title>
+    <v-icon v-if="currentChannel.Private">mdi-lock</v-icon>
     <v-menu bottom offset-y offset-x>
       <template v-slot:activator="{ on }">
         <v-avatar color="primary" v-on="on">

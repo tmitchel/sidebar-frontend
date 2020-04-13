@@ -10,8 +10,11 @@
               </v-avatar>
               {{ message.user_info.display_name }}
             </v-card-subtitle>
-            <v-card-text class="text-left pb-0">
-              {{ message.content }}
+            <v-card-text v-if="!message.Markdown" class="text-left pb-0 mt-1">
+              {{ formed }}
+            </v-card-text>
+            <v-card-text v-else class="text-left pb-0 mt-1">
+              <div v-html="formed"></div>
             </v-card-text>
           </v-col>
           <v-col v-if="hover" class="pl-0">
@@ -29,8 +32,22 @@
 </template>
 
 <script>
+import marked from "marked";
+
 export default {
   name: "MessageView",
-  props: ["message", "usersInChannel", "startSidebar", "startDirect"]
+  props: ["message", "usersInChannel", "startSidebar", "startDirect"],
+  computed: {
+    formed() {
+      return marked(this.message.content);
+    }
+  }
 };
 </script>
+
+<style scoped>
+p {
+  padding: 0px !important;
+  margin: 0px !important;
+}
+</style>
