@@ -15,7 +15,6 @@ const defaultUser = {
 export function createWebSocketPlugin(socket) {
   return store => {
     socket.onmessage = event => {
-      console.log("got message");
       new Response(event.data).json().then(msg => {
         let new_messages = store.state.messages;
         new_messages.push(msg);
@@ -34,7 +33,6 @@ export function createWebSocketPlugin(socket) {
     store.subscribe(mut => {
       if (mut.type === "sendMessages") {
         socket.send(JSON.stringify(mut.payload));
-        console.log("sent message");
       }
     });
   };
@@ -71,6 +69,19 @@ export default new Vuex.Store({
     sendMessages() {}
   },
   actions: {
+    uploadFiles(uploads) {
+      return new Promise((res, rej) => {
+        for (let ups of uploads) {
+          fetch(`${basepath}/api/upload`, {
+            method: "POST",
+            mode: "cors",
+            credentials: "include",
+            body: ups
+          }).catch(err => rej(err));
+        }
+        res();
+      });
+    },
     createChannel({ commit }, channel) {
       return new Promise((res, rej) => {
         fetch(`${basepath}/api/channel`, {
@@ -187,7 +198,6 @@ export default new Vuex.Store({
       })
         .then(resp => {
           resp.json().then(resp => {
-            console.log(resp);
             commit("updateUser", resp.User || {});
             commit("channels", resp.Channels || []);
           });

@@ -54,9 +54,6 @@ export default {
     async submit(display_name, email, password, token, profile_image) {
       const user = { display_name, email, password, token, profile_image };
       await this.signup({ token, user });
-      console.log(
-        `creating user with ${display_name} ${email} ${password} ${token}`
-      );
       this.signupOpen = false;
     },
     close() {

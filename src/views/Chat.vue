@@ -174,7 +174,8 @@ export default {
       "addUserToChannel",
       "removeUserFromChannel",
       "newToken",
-      "resolveSidebar"
+      "resolveSidebar",
+      "uploadFiles"
     ]),
     ...mapMutations(["sendMessages"]),
     // send a message to the chat
@@ -275,6 +276,7 @@ export default {
     },
     async handleUpload(upFiles) {
       console.log(`uploading ${upFiles}`);
+      await this.uploadFiles(upFiles);
     }
   }
 };
