@@ -177,7 +177,10 @@ export default {
       "resolveSidebar",
       "uploadFiles"
     ]),
-    ...mapMutations(["sendMessages"]),
+    ...mapMutations({
+      sendMessages: "sendMessages",
+      updateChannels: "channels"
+    }),
     // send a message to the chat
     send(message) {
       if (message !== "") {
@@ -218,6 +221,9 @@ export default {
     // change the current channel
     changeChannel(chan) {
       if (this.$router.history.current.path !== `/chat/${chan.ID}`) {
+        let all_channels = this.channels;
+        all_channels.find(c => c.ID === chan.ID).Alert = false;
+        this.updateChannels(all_channels);
         this.$router.push(`/chat/${chan.ID}`);
         this.loadChannel(chan.ID);
       }

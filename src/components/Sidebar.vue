@@ -97,7 +97,7 @@
             class="font-weight-light"
           >
             <v-badge
-              :value="chan.Alert === true"
+              :value="chan.Alert"
               color="red"
               dot
               offset-y="11"
@@ -111,7 +111,7 @@
       </v-list-item>
     </v-list>
     <v-divider :inset="false"></v-divider>
-    <v-list desne>
+    <v-list>
       <v-list-item link>
         <v-list-item-content>
           <v-list-item-title @click.prevent="newChannel">

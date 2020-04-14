@@ -21,13 +21,15 @@ export function createWebSocketPlugin(socket) {
         store.commit("messages", new_messages);
 
         let new_channels = store.state.channels;
-        for (let i = 0; i < new_channels.length; i++) {
-          if (new_channels[i].ID === msg.channel) {
-            new_channels[i].Alert = true;
+        if (msg.channel !== store.currentChannel.ID) {
+          for (let i = 0; i < new_channels.length; i++) {
+            if (new_channels[i].ID === msg.channel) {
+              new_channels[i].Alert = true;
+            }
           }
         }
         console.log("commit new channels");
-        // store.commit("channels", new_channels);
+        store.commit("channels", new_channels);
       });
     };
     store.subscribe(mut => {
@@ -199,6 +201,9 @@ export default new Vuex.Store({
         .then(resp => {
           resp.json().then(resp => {
             commit("updateUser", resp.User || {});
+            for (let i = 0; i < resp.Channels.length; i++) {
+              resp.Channels[i].Alert = false;
+            }
             commit("channels", resp.Channels || []);
           });
         })
