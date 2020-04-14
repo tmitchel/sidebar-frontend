@@ -105,8 +105,6 @@ export default {
         return ["Password is required"];
       } else if (!this.$v.password.minLength) {
         return ["Password must be at least 8 characters long"];
-      } else if (!this.$v.password.maxLength) {
-        return ["Password must be at most 40 characters long"];
       } else {
         return [];
       }
