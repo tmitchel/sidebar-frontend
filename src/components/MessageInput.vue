@@ -46,12 +46,12 @@
               <v-card-text>hi</v-card-text>
             </v-card>
           </v-dialog>
-          <v-btn icon @click.prevent="preview = !preview">
+          <!-- <v-btn icon @click.prevent="preview = !preview">
             <v-icon>mdi-format-letter-case</v-icon>
           </v-btn>
           <v-btn icon @click.prevent="fileUpload">
             <v-icon>mdi-file-document-outline</v-icon>
-          </v-btn>
+          </v-btn> -->
         </v-btn-toggle>
       </template>
     </v-textarea>

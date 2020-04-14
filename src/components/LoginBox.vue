@@ -13,6 +13,7 @@
           label="Password"
           name="password"
           type="password"
+          @keypress.enter.prevent="login(email, password)"
         />
       </v-form>
     </v-card-text>

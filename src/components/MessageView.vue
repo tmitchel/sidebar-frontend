@@ -11,7 +11,7 @@
               {{ message.user_info.display_name }}
             </v-card-subtitle>
             <v-card-text v-if="!message.Markdown" class="text-left pb-0 mt-1">
-              {{ formed }}
+              {{ message.content }}
             </v-card-text>
             <v-card-text v-else class="text-left pb-0 mt-1">
               <div v-html="formed"></div>
