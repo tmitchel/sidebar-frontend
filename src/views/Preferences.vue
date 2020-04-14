@@ -1,6 +1,14 @@
 <template>
   <v-container>
     <h1>Preferences</h1>
+    <v-snackbar v-model="success" timeout="2000">
+      <h3>Success!</h3>
+      <v-btn color="blue" text @click="success = false">Close</v-btn>
+    </v-snackbar>
+    <v-snackbar v-model="failure" timeout="2000">
+      <h3>Error!</h3>
+      <v-btn color="blue" text @click="failure = false">Close</v-btn>
+    </v-snackbar>
     <v-row>
       <v-col>
         <v-form>
@@ -34,24 +42,27 @@
       </v-col>
     </v-row>
     <v-btn color="primary" @click.prevent="update" class="ma-1">Update</v-btn>
-    <v-btn color="primary" @click.prevent="back" class="ma-1">Cancel</v-btn>
+    <v-btn color="primary" @click.prevent="back" class="ma-1">Close</v-btn>
   </v-container>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
   name: "Preferences",
   data: () => ({
     display_name: "",
     email: "",
     profile_image: "",
-    display_profile_image: ""
+    display_profile_image: "",
+    success: false,
+    failure: false
   }),
   computed: {
     ...mapState(["user"])
   },
   methods: {
+    ...mapActions(["updateUser"]),
     back() {
       this.$router.back();
     },
@@ -60,7 +71,33 @@ export default {
       this.profile_image = this.user.profile_image;
     },
     update() {
-      // send to backend
+      let newEmail = this.user.email;
+      let newDisplayName = this.user.display_name;
+      let newProfileImage = this.user.profile_image;
+      if (this.email !== "") {
+        newEmail = this.email;
+      }
+
+      if (this.profile_image !== "") {
+        newProfileImage = this.profile_image;
+      }
+
+      if (this.display_name !== "") {
+        newDisplayName = this.display_name;
+      }
+
+      let vm = this;
+      this.updateUser({
+        id: this.user.id,
+        email: newEmail,
+        display_name: newDisplayName,
+        profile_image: newProfileImage
+      })
+        .then(() => {
+          vm.success = true;
+          vm.display_profile_image = newProfileImage;
+        })
+        .catch(() => (vm.failure = false));
     }
   },
   created() {
