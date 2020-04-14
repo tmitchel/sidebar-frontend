@@ -55,6 +55,7 @@ export default {
       const user = { display_name, email, password, token, profile_image };
       await this.signup({ token, user });
       this.signupOpen = false;
+      await this.handleLogin(email, password);
     },
     close() {
       this.signupOpen = false;
