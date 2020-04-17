@@ -21,7 +21,7 @@
 <script>
 import LoginBox from "@/components/LoginBox.vue";
 import NewUser from "@/components/NewUser.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import store, { createWebSocketPlugin } from "@/store.js";
 
 export default {
@@ -33,6 +33,9 @@ export default {
     signupOpen: false,
     errored: false
   }),
+  computed: {
+    ...mapState(["connected"])
+  },
   methods: {
     ...mapActions(["login", "signup"]),
     openSignup() {
@@ -44,12 +47,14 @@ export default {
           this.$router.push("/");
         })
         .catch(() => (this.errored = true));
-      const websocket_path =
-        process.env.NODE_ENV === "development"
-          ? "wss://localhost:8080/ws"
-          : "wss://sidebar-backend.herokuapp.com/ws";
-      const socket = new WebSocket(websocket_path);
-      createWebSocketPlugin(socket)(store);
+      if (!this.connected) {
+        const websocket_path =
+          process.env.NODE_ENV === "development"
+            ? "wss://localhost:8080/ws"
+            : "wss://sidebar-backend.herokuapp.com/ws";
+        const socket = new WebSocket(websocket_path);
+        createWebSocketPlugin(socket)(store);
+      }
     },
     async submit(display_name, email, password, token, profile_image) {
       const user = { display_name, email, password, token, profile_image };

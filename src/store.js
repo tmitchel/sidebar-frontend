@@ -14,6 +14,7 @@ const defaultUser = {
 
 export function createWebSocketPlugin(socket) {
   return store => {
+    store.state.connected = true;
     socket.onmessage = event => {
       new Response(event.data).json().then(msg => {
         let new_messages = store.state.messages;
@@ -53,6 +54,7 @@ export function createWebSocketPlugin(socket) {
 
 export default new Vuex.Store({
   state: {
+    connected: false,
     user: defaultUser,
     currentChannel: {},
     usersInChannel: [],

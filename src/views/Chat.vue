@@ -158,6 +158,7 @@ export default {
     await this.loadChannel(this.$router.history.current.params["channel"]);
     this.timer = setInterval(this.refreshToken, 1000 * 60); // 1 minute
     this.$vuetify.goTo(500);
+    console.log(this);
   },
   beforeDestroy() {
     clearInterval(this.timer);
