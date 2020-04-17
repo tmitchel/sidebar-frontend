@@ -11,11 +11,11 @@
         <v-list-item-group v-model="channel" color="primary">
           <v-list-item
             v-for="chan in chans"
-            :key="chan.ID"
-            :to="`/chat/${chan.ID}`"
+            :key="chan.id"
+            :to="`/chat/${chan.id}`"
           >
             <v-list-item-content>
-              {{ chan.Name }}
+              {{ chan.name }}
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
@@ -28,11 +28,11 @@
         <v-list-item-group v-model="channel" color="primary">
           <v-list-item
             v-for="chan in sidebars"
-            :key="chan.ID"
-            :to="`/chat/${chan.ID}`"
+            :key="chan.id"
+            :to="`/chat/${chan.id}`"
           >
             <v-list-item-content>
-              {{ chan.Name }}
+              {{ chan.name }}
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
@@ -45,11 +45,11 @@
         <v-list-item-group v-model="channel" color="primary">
           <v-list-item
             v-for="chan in direct"
-            :key="chan.ID"
-            :to="`/chat/${chan.ID}`"
+            :key="chan.id"
+            :to="`/chat/${chan.id}`"
           >
             <v-list-item-content>
-              {{ chan.Name }}
+              {{ chan.name }}
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
@@ -77,14 +77,14 @@ export default {
     ...mapState(["channels", "user"]),
     chans() {
       return this.channels.filter(
-        c => c.IsSidebar === false && c.Direct === false
+        c => c.is_sidebar === false && c.direct === false
       );
     },
     sidebars() {
-      return this.channels.filter(c => c.IsSidebar === true);
+      return this.channels.filter(c => c.is_sidebar === true);
     },
     direct() {
-      return this.channels.filter(c => c.Direct === true);
+      return this.channels.filter(c => c.direct === true);
     }
   },
   methods: {

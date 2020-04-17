@@ -49,7 +49,7 @@
     <!-- Main screen with messages and text box -->
     <v-container class="fill-height no-marg" fluid>
       <v-col class="text-center no-marg" align-self="end">
-        <v-row v-for="m in findMatches" :key="m.ID" no-gutters="">
+        <v-row v-for="m in findMatches" :key="m.id" no-gutters="">
           <message-view
             ref="con"
             v-if="m.event === 1"
@@ -140,17 +140,17 @@ export default {
     },
     basics() {
       return this.channels.filter(
-        c => c.Member === true && c.IsSidebar === false && c.Direct === false
+        c => c.Member === true && c.is_sidebar === false && c.direct === false
       );
     },
     sidebars() {
       return this.channels.filter(
-        c => c.Member === true && c.IsSidebar === true && c.Direct === false
+        c => c.Member === true && c.is_sidebar === true && c.direct === false
       );
     },
     directs() {
       return this.channels.filter(
-        c => c.Member === true && c.IsSidebar === false && c.Direct === true
+        c => c.Member === true && c.is_sidebar === false && c.direct === true
       );
     }
   },
@@ -187,9 +187,9 @@ export default {
         this.sendMessages({
           event: 1,
           content: message,
-          to_user: 1,
+          to_user: "",
           from_user: this.user.id,
-          channel: parseInt(this.$router.history.current.params["channel"])
+          channel: this.$router.history.current.params["channel"]
         });
       }
     },
@@ -206,11 +206,11 @@ export default {
       await this.createChannel({
         Name: newName
       });
-      this.$router.push(`/chat/${this.currentChannel.ID}`);
+      this.$router.push(`/chat/${this.currentChannel.id}`);
     },
     async submitChannelPref(newName) {
       console.log(
-        `rename channel ${this.currentChannel.ID} from ${this.currentChannel.Name} to ${newName}`
+        `rename channel ${this.currentChannel.id} from ${this.currentChannel.Name} to ${newName}`
       );
     },
     // handle user signing out
@@ -220,12 +220,12 @@ export default {
     },
     // change the current channel
     changeChannel(chan) {
-      if (this.$router.history.current.path !== `/chat/${chan.ID}`) {
+      if (this.$router.history.current.path !== `/chat/${chan.id}`) {
         let all_channels = this.channels;
-        all_channels.find(c => c.ID === chan.ID).Alert = false;
+        all_channels.find(c => c.id === chan.id).Alert = false;
         this.updateChannels(all_channels);
-        this.$router.push(`/chat/${chan.ID}`);
-        this.loadChannel(chan.ID);
+        this.$router.push(`/chat/${chan.id}`);
+        this.loadChannel(chan.id);
       }
     },
     // open the overlay for creating a new channel

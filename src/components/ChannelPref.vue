@@ -19,7 +19,7 @@ export default {
     name: ""
   }),
   created() {
-    this.name = this.channel.Name;
+    this.name = this.channel.name;
   },
   methods: {
     handleSubmit() {

@@ -29,7 +29,7 @@
             <v-list>
               <v-list-item
                 v-for="user in users"
-                :key="user.ID"
+                :key="user.id"
                 @click.prevent="addAt(user.display_name)"
               >
                 <v-list-item-title>{{ user.display_name }}</v-list-item-title>
@@ -56,7 +56,7 @@
       </template>
     </v-textarea>
     <v-sheet v-if="typer && typer.Event === 2" class="text-left pl-3">
-      {{ users[typer.FromUser].display_name }} is typing...
+      {{ users[typer.from_user].display_name }} is typing...
     </v-sheet>
   </v-card>
 </template>

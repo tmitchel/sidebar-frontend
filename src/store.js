@@ -21,9 +21,9 @@ export function createWebSocketPlugin(socket) {
         store.commit("messages", new_messages);
 
         let new_channels = store.state.channels;
-        if (msg.channel !== store.currentChannel.ID) {
+        if (msg.channel !== store.state.currentChannel.id) {
           for (let i = 0; i < new_channels.length; i++) {
-            if (new_channels[i].ID === msg.channel) {
+            if (new_channels[i].id === msg.channel) {
               new_channels[i].Alert = true;
             }
           }
@@ -35,6 +35,17 @@ export function createWebSocketPlugin(socket) {
     store.subscribe(mut => {
       if (mut.type === "sendMessages") {
         socket.send(JSON.stringify(mut.payload));
+      } else if (mut.type === "signout") {
+        // socket.send(
+        //   JSON.stringify({
+        //     id: "",
+        //     event: 69,
+        //     content: "",
+        //     to_user: "",
+        //     from_user: "",
+        //     channel: ""
+        //   })
+        // );
       }
     });
   };
@@ -68,7 +79,8 @@ export default new Vuex.Store({
     addChannel(state, channel) {
       state.channels.push(channel);
     },
-    sendMessages() {}
+    sendMessages() {},
+    signout() {}
   },
   actions: {
     uploadFiles(uploads) {
@@ -288,6 +300,7 @@ export default new Vuex.Store({
     },
     signout({ commit }) {
       commit("updateUser", defaultUser);
+      commit("signout");
     },
     refreshToken() {
       return new Promise((res, rej) => {

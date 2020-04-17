@@ -3,8 +3,8 @@
     <v-avatar color="primary">
       <v-icon dark x-large>mdi-account-circle</v-icon>
     </v-avatar>
-    <v-toolbar-title>{{ currentChannel.Name }}</v-toolbar-title>
-    <v-icon v-if="currentChannel.Private">mdi-lock</v-icon>
+    <v-toolbar-title>{{ currentChannel.name }}</v-toolbar-title>
+    <v-icon v-if="currentChannel.private">mdi-lock</v-icon>
     <v-menu bottom offset-y offset-x>
       <template v-slot:activator="{ on }">
         <v-avatar color="primary" v-on="on">
@@ -55,14 +55,14 @@ export default {
   ],
   methods: {
     handleAdd() {
-      this.addUser(this.currentChannel.ID);
+      this.addUser(this.currentChannel.id);
     },
     handleLeave() {
-      this.leaveChannel(this.currentChannel.ID);
+      this.leaveChannel(this.currentChannel.id);
       this.$router.push("/");
     },
     handleResolve() {
-      this.resolve(this.currentChannel.ID);
+      this.resolve(this.currentChannel.id);
     }
   },
   computed: {
@@ -78,7 +78,7 @@ export default {
         }
       ];
 
-      if (this.currentChannel.IsSidebar && !this.currentChannel.resolved) {
+      if (this.currentChannel.is_sidebar && !this.currentChannel.resolved) {
         opts.unshift({
           text: "Mark Resolved",
           action: this.handleResolve
@@ -86,7 +86,7 @@ export default {
       }
 
       if (
-        this.channelsForUser.find(el => this.currentChannel.ID === el.ID) ===
+        this.channelsForUser.find(el => this.currentChannel.id === el.id) ===
         undefined
       ) {
         opts.unshift({

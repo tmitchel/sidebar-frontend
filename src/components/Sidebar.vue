@@ -25,7 +25,7 @@
       <v-list-item
         link
         v-for="chan in sidebars"
-        :key="chan.ID"
+        :key="chan.id"
         dense
         style="min-height: 35px;"
       >
@@ -34,14 +34,14 @@
             @click.prevent="changeChannel(chan)"
             class="font-weight-light"
           >
-            <v-icon v-if="chan.Resolved" dark x-small dense class="mr-1"
+            <v-icon v-if="chan.resolved" dark x-small dense class="mr-1"
               >mdi-check</v-icon
             >
             <v-icon v-else dark x-small dense class="mr-1"
               >mdi-circle-outline</v-icon
             >
             <v-badge color="red" dot offset-y="11" offset-x="-5" class="mt-0">
-              {{ chan.Name }}
+              {{ chan.name }}
             </v-badge>
           </v-list-item-title>
         </v-list-item-content>
@@ -59,7 +59,7 @@
       <v-list-item
         link
         v-for="chan in direct"
-        :key="chan.ID"
+        :key="chan.id"
         dense
         style="min-height: 35px;"
       >
@@ -69,7 +69,7 @@
             class="font-weight-light"
           >
             <v-badge color="red" dot offset-y="11" offset-x="-5" class="mt-0">
-              {{ chan.Name }}
+              {{ chan.name }}
             </v-badge>
           </v-list-item-title>
         </v-list-item-content>
@@ -87,7 +87,7 @@
       <v-list-item
         link
         v-for="chan in basic"
-        :key="chan.ID"
+        :key="chan.id"
         dense
         style="min-height: 35px;"
       >
@@ -104,7 +104,7 @@
               offset-x="-5"
               class="mt-0"
             >
-              {{ chan.Name }}
+              {{ chan.name }}
             </v-badge>
           </v-list-item-title>
         </v-list-item-content>
