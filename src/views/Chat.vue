@@ -263,6 +263,7 @@ export default {
       this.newSidebar = true;
     },
     async submitSidebar(message, name, desc) {
+      this.newSidebar = false;
       await this.createSidebar({
         parent: message.channel,
         name: name,
