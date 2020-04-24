@@ -97,10 +97,11 @@ export default {
       this.newChannel = false;
     },
     // submit the form for creating a new channel
-    async submit(newName) {
+    async submit(newName, newDesc) {
       this.newChannel = false;
       await this.createChannel({
-        Name: newName
+        Name: newName,
+        desc: newDesc
       });
     }
   },

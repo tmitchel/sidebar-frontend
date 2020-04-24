@@ -118,13 +118,13 @@ export default new Vuex.Store({
         });
       });
     },
-    createDirect({ commit }, { to_id, from_id, name }) {
+    createDirect({ commit }, { to_id, from_id, name, desc }) {
       return new Promise((res, rej) => {
         fetch(`${basepath}/api/direct/${to_id}/${from_id}`, {
           method: "POST",
           mode: "cors",
           credentials: "include",
-          body: JSON.stringify({ Name: name })
+          body: JSON.stringify({ Name: name, details: desc })
         })
           .then(resp => {
             if (resp.status !== 200) {
@@ -140,13 +140,13 @@ export default new Vuex.Store({
           .catch(() => rej());
       });
     },
-    createSidebar({ commit }, { parent, name, user }) {
+    createSidebar({ commit }, { parent, name, user, desc }) {
       return new Promise((res, rej) => {
         fetch(`${basepath}/api/sidebar/${parent}/${user}`, {
           method: "POST",
           mode: "cors",
           credentials: "include",
-          body: JSON.stringify({ Name: name })
+          body: JSON.stringify({ Name: name, details: desc })
         })
           .then(resp => {
             if (resp.status !== 200) {

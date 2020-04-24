@@ -1,14 +1,15 @@
 <template>
   <v-card light width="500">
-    <v-card-title>New Channel</v-card-title>
+    <v-card-title>New Sidebar</v-card-title>
     <v-container>
       <v-form>
         <v-text-field
           v-model="newChannelName"
-          label="Channel Name"
+          label="Sidebar Name"
           required
         ></v-text-field>
         <v-text-field
+          :disabled="true"
           v-model="newChannelDesc"
           label="Channel Description"
           required
@@ -16,7 +17,9 @@
       </v-form>
     </v-container>
     <v-card-actions>
-      <v-btn @click="submit(newChannelName, newChannelDesc)">Submit</v-btn>
+      <v-btn @click="submit(message, newChannelName, newChannelDesc)"
+        >Submit</v-btn
+      >
       <v-btn @click="close">Cancel</v-btn>
     </v-card-actions>
   </v-card>
@@ -24,11 +27,14 @@
 
 <script>
 export default {
-  name: "NewChannel",
-  props: ["close", "submit"],
+  name: "NewSidebar",
+  props: ["close", "submit", "message"],
   data: () => ({
     newChannelName: "",
     newChannelDesc: ""
-  })
+  }),
+  created() {
+    this.newChannelDesc = "Sidebar: " + this.message.content;
+  }
 };
 </script>

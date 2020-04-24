@@ -15,6 +15,11 @@
       <new-channel :close="close" :submit="submit"></new-channel>
     </v-overlay>
 
+    <!-- Overlay for creating a new sidebar -->
+    <v-overlay :absolute="false" opacity=".86" :value="newSidebar" z-index="6">
+      <new-sidebar :close="close" :submit="submitSidebar" :message="sidebarMessage"></new-sidebar>
+    </v-overlay>
+
     <!-- Overlay for new user token -->
     <v-overlay :absolute="false" opacity=".86" :value="Invite" z-index="6">
       <invitation :close="close" :token="newToken"></invitation>
@@ -78,6 +83,7 @@
 import { mapActions, mapMutations, mapState } from "vuex";
 import Sidebar from "@/components/Sidebar.vue";
 import NewChannel from "@/components/NewChannel.vue";
+import NewSidebar from "@/components/NewSidebar.vue";
 import TopBar from "@/components/TopBar.vue";
 import MessageInput from "@/components/MessageInput.vue";
 import MessageView from "@/components/MessageView.vue";
@@ -90,6 +96,7 @@ export default {
   components: {
     Sidebar,
     NewChannel,
+    NewSidebar,
     TopBar,
     MessageInput,
     MessageView,
@@ -102,6 +109,8 @@ export default {
   },
   data: () => ({
     newChannel: false,
+    newSidebar: false,
+    sidebarMessage: "",
     Invite: false,
     typer: null,
     timer: null,
@@ -202,15 +211,17 @@ export default {
     // close the overlay for creating a new channel
     close() {
       this.newChannel = false;
+      this.newSidebar = false;
       this.Invite = false;
       this.channelPref = false;
       this.uploadFile = false;
     },
     // submit the form for creating a new channel
-    async submit(newName) {
+    async submit(newName, newDesc) {
       this.newChannel = false;
       await this.createChannel({
-        Name: newName
+        Name: newName,
+        desc: newDesc
       });
       await this.addUserToChannel({
         user_id: this.user.id,
@@ -247,11 +258,16 @@ export default {
     openChannelPref() {
       this.channelPref = true;
     },
-    async startSidebar(message) {
+    startSidebar(message) {
+      this.sidebarMessage = message;
+      this.newSidebar = true;
+    },
+    async submitSidebar(message, name, desc) {
       await this.createSidebar({
         parent: message.channel,
-        name: `Sidebar: ${message.content}`,
-        user: this.user.id
+        name: name,
+        user: this.user.id,
+        desc: desc
       });
       await this.loadUser(this.user.id);
       await this.loadChannel(this.currentChannel.id);
@@ -261,7 +277,8 @@ export default {
       await this.createDirect({
         to_id: message.user_info.id,
         from_id: this.user.id,
-        name: `Direct: ${message.user_info.display_name}`
+        name: message.user_info.display_name,
+        desc: `Direct message with ${message.user_info.display_name}`
       });
       await this.loadUser(this.user.id);
       await this.loadChannel(this.currentChannel.id);
