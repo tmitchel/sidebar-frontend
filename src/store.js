@@ -266,6 +266,27 @@ export default new Vuex.Store({
           .catch(err => rej(err));
       });
     },
+    updateChannel({ commit }, channel) {
+      return new Promise((res, rej) => {
+        fetch(`${basepath}/api/update-channelinfo`, {
+          method: "POST",
+          mode: "cors",
+          credentials: "include",
+          body: JSON.stringify(channel)
+        })
+          .then(resp => {
+            if (resp.status !== 200) {
+              rej();
+              return;
+            }
+            resp.json().then(resp => {
+              commit("updateCurrentChannel", resp);
+              res();
+            });
+          })
+          .catch(err => rej(err));
+      });
+    },
     signup({ commit }, { token, user }) {
       return new Promise((res, rej) => {
         fetch(`${basepath}/api/user/${token}`, {

@@ -101,7 +101,7 @@ export default {
       this.newChannel = false;
       await this.createChannel({
         Name: newName,
-        desc: newDesc
+        details: newDesc
       });
     }
   },

@@ -17,13 +17,25 @@
 
     <!-- Overlay for creating a new sidebar -->
     <v-overlay :absolute="false" opacity=".86" :value="newSidebar" z-index="6">
-      <new-sidebar :close="close" :submit="submitSidebar" :message="sidebarMessage"></new-sidebar>
+      <new-sidebar
+        :close="close"
+        :submit="submitSidebar"
+        :message="sidebarMessage"
+      ></new-sidebar>
     </v-overlay>
 
     <!-- Overlay for new user token -->
     <v-overlay :absolute="false" opacity=".86" :value="Invite" z-index="6">
       <invitation :close="close" :token="newToken"></invitation>
     </v-overlay>
+
+    <!-- Notification for @'s -->
+    <v-snackbar v-model="atted" top right :timeout="6000"
+      >New Message!
+      <v-btn color="red" text @click="atted = false">
+        Close
+      </v-btn></v-snackbar
+    >
 
     <!-- Overlay with channel preferences -->
     <v-overlay :absolute="false" opacity=".86" :value="channelPref" z-index="6">
@@ -116,7 +128,8 @@ export default {
     timer: null,
     channelPref: false,
     preview: false,
-    uploadFile: false
+    uploadFile: false,
+    atted: false
   }),
   updated() {
     if (this.$refs.con !== undefined) {
@@ -190,7 +203,8 @@ export default {
       "resolveSidebar",
       "uploadFiles",
       "addUserToChannel",
-      "loadUser"
+      "loadUser",
+      "updateChannel"
     ]),
     ...mapMutations({
       sendMessages: "sendMessages",
@@ -217,11 +231,12 @@ export default {
       this.uploadFile = false;
     },
     // submit the form for creating a new channel
-    async submit(newName, newDesc) {
+    async submit(newName, newDesc, newImage) {
       this.newChannel = false;
       await this.createChannel({
         Name: newName,
-        desc: newDesc
+        details: newDesc,
+        display_image: newImage
       });
       await this.addUserToChannel({
         user_id: this.user.id,
@@ -231,10 +246,15 @@ export default {
       await this.loadChannel(this.currentChannel.id);
       this.$router.push(`/chat/${this.currentChannel.id}`);
     },
-    async submitChannelPref(newName) {
-      console.log(
-        `rename channel ${this.currentChannel.id} from ${this.currentChannel.Name} to ${newName}`
-      );
+    async submitChannelPref(newName, newDesc, newImage) {
+      await this.updateChannel({
+        ...this.currentChannel,
+        name: newName,
+        details: newDesc,
+        display_image: newImage
+      });
+      await this.loadUser(this.user.id);
+      await this.loadChannel(this.currentChannel.id);
     },
     // handle user signing out
     handleSignout() {
@@ -262,13 +282,14 @@ export default {
       this.sidebarMessage = message;
       this.newSidebar = true;
     },
-    async submitSidebar(message, name, desc) {
+    async submitSidebar(message, name, desc, img) {
       this.newSidebar = false;
       await this.createSidebar({
         parent: message.channel,
         name: name,
         user: this.user.id,
-        desc: desc
+        desc: desc,
+        display_image: img
       });
       await this.loadUser(this.user.id);
       await this.loadChannel(this.currentChannel.id);

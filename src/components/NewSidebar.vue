@@ -14,10 +14,15 @@
           label="Channel Description"
           required
         ></v-text-field>
+        <v-text-field
+          v-model="newChannelImage"
+          label="Channel Image"
+          required
+        ></v-text-field>
       </v-form>
     </v-container>
     <v-card-actions>
-      <v-btn @click="submit(message, newChannelName, newChannelDesc)"
+      <v-btn @click="submit(message, newChannelName, newChannelDesc, newChannelImage)"
         >Submit</v-btn
       >
       <v-btn @click="close">Cancel</v-btn>
@@ -31,7 +36,8 @@ export default {
   props: ["close", "submit", "message"],
   data: () => ({
     newChannelName: "",
-    newChannelDesc: ""
+    newChannelDesc: "",
+    newChannelImage: ""
   }),
   created() {
     this.newChannelDesc = "Sidebar: " + this.message.content;

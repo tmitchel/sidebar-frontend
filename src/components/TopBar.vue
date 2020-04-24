@@ -68,10 +68,10 @@ export default {
   computed: {
     options() {
       let opts = [
-        {
-          text: "Mute Channel",
-          action: () => null
-        },
+        // {
+        //   text: "Mute Channel",
+        //   action: () => null
+        // },
         {
           text: "Channel Preferences",
           action: this.openChannelPref
