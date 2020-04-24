@@ -118,7 +118,7 @@ export default new Vuex.Store({
         });
       });
     },
-    createDirect(_, { to_id, from_id, name }) {
+    createDirect({ commit }, { to_id, from_id, name }) {
       return new Promise((res, rej) => {
         fetch(`${basepath}/api/direct/${to_id}/${from_id}`, {
           method: "POST",
@@ -131,12 +131,16 @@ export default new Vuex.Store({
               rej();
               return;
             }
-            res();
+            resp.json().then(resp => {
+              commit("addChannel", resp);
+              commit("updateCurrentChannel", resp);
+              res();
+            });
           })
           .catch(() => rej());
       });
     },
-    createSidebar(_, { parent, name, user }) {
+    createSidebar({ commit }, { parent, name, user }) {
       return new Promise((res, rej) => {
         fetch(`${basepath}/api/sidebar/${parent}/${user}`, {
           method: "POST",
@@ -149,7 +153,11 @@ export default new Vuex.Store({
               rej();
               return;
             }
-            res();
+            resp.json().then(resp => {
+              commit("addChannel", resp);
+              commit("updateCurrentChannel", resp);
+              res();
+            });
           })
           .catch(() => rej());
       });
