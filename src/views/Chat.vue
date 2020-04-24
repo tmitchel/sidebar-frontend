@@ -215,6 +215,7 @@ export default {
         channel_id: this.currentChannel.id
       });
       await this.loadUser(this.user.id);
+      await this.loadChannel(this.currentChannel.id);
       this.$router.push(`/chat/${this.currentChannel.id}`);
     },
     async submitChannelPref(newName) {
@@ -246,11 +247,13 @@ export default {
     },
     async startSidebar(message) {
       await this.createSidebar({
-        parent: message.id,
+        parent: message.channel,
         name: `Sidebar: ${message.content}`,
         user: this.user.id
       });
       await this.loadUser(this.user.id);
+      await this.loadChannel(this.currentChannel.id);
+      this.$router.push(`/chat/${this.currentChannel.id}`);
     },
     async startDirect(message) {
       await this.createDirect({
@@ -259,6 +262,8 @@ export default {
         name: `Direct: ${message.user_info.display_name}`
       });
       await this.loadUser(this.user.id);
+      await this.loadChannel(this.currentChannel.id);
+      this.$router.push(`/chat/${this.currentChannel.id}`);
     },
     handleTyping() {
       console.log("typing now");
