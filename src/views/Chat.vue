@@ -292,6 +292,7 @@ export default {
     async handleResolve(channel_id) {
       await this.resolveSidebar(channel_id);
       await this.loadUser(this.user.id);
+      await this.loadChannel(this.$router.history.current.params["channel"]);
     },
     toggleFileUpload() {
       this.uploadFile = !this.uploadFile;

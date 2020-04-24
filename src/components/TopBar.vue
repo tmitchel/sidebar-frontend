@@ -78,9 +78,11 @@ export default {
         }
       ];
 
-      if (this.currentChannel.is_sidebar && !this.currentChannel.resolved) {
+      if (this.currentChannel.is_sidebar) {
         opts.unshift({
-          text: "Mark Resolved",
+          text: !this.currentChannel.resolved
+            ? "Mark Resolved"
+            : "Mark Unresolved",
           action: this.handleResolve
         });
       }
