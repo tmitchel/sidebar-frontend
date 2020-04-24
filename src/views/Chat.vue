@@ -112,7 +112,9 @@ export default {
   updated() {
     if (this.$refs.con !== undefined) {
       let bottom = this.$refs.con[this.$refs.con.length - 1];
-      bottom.$vuetify.goTo(bottom, { duration: 0 });
+      if (bottom !== undefined) {
+        bottom.$vuetify.goTo(bottom, { duration: 0 });
+      }
     }
   },
   computed: {
