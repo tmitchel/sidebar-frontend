@@ -18,10 +18,15 @@
             </v-card-text>
           </v-col>
           <v-col v-if="hover" class="pl-0">
-            <v-btn @click.prevent="startSidebar(message)" icon class="mt-0">
+            <v-btn @click.prevent="startSidebar(message)" :disabled="channel.is_sidebar === true" icon class="mt-0">
               <v-icon>mdi-database-plus</v-icon>
             </v-btn>
-            <v-btn @click.prevent="startDirect(message)" icon class="mt-0">
+            <v-btn
+              @click.prevent="startDirect(message)"
+              :disabled="message.user_info.id === user.id"
+              icon
+              class="mt-0"
+            >
               <v-icon>mdi-message</v-icon>
             </v-btn>
           </v-col>
@@ -36,7 +41,14 @@ import marked from "marked";
 
 export default {
   name: "MessageView",
-  props: ["message", "usersInChannel", "startSidebar", "startDirect"],
+  props: [
+    "user",
+    "channel",
+    "message",
+    "usersInChannel",
+    "startSidebar",
+    "startDirect"
+  ],
   computed: {
     formed() {
       return marked(this.message.content);

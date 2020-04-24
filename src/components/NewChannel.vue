@@ -7,6 +7,7 @@
           v-model="newChannelName"
           label="Channel Name"
           required
+          @keypress.enter.prevent="submit(newChannelName)"
         ></v-text-field>
       </v-form>
     </v-container>

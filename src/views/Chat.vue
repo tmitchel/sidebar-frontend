@@ -56,6 +56,8 @@
             :message="m"
             :startSidebar="startSidebar"
             :startDirect="startDirect"
+            :user="user"
+            :channel="currentChannel"
           />
         </v-row>
       </v-col>
@@ -158,7 +160,6 @@ export default {
     await this.loadChannel(this.$router.history.current.params["channel"]);
     this.timer = setInterval(this.refreshToken, 1000 * 60); // 1 minute
     this.$vuetify.goTo(500);
-    console.log(this);
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -176,7 +177,9 @@ export default {
       "removeUserFromChannel",
       "newToken",
       "resolveSidebar",
-      "uploadFiles"
+      "uploadFiles",
+      "addUserToChannel",
+      "loadUser"
     ]),
     ...mapMutations({
       sendMessages: "sendMessages",
@@ -207,6 +210,11 @@ export default {
       await this.createChannel({
         Name: newName
       });
+      await this.addUserToChannel({
+        user_id: this.user.id,
+        channel_id: this.currentChannel.id
+      });
+      await this.loadUser(this.user.id);
       this.$router.push(`/chat/${this.currentChannel.id}`);
     },
     async submitChannelPref(newName) {
