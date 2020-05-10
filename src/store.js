@@ -17,18 +17,21 @@ export function createWebSocketPlugin(socket) {
     store.state.connected = true;
     socket.onmessage = event => {
       new Response(event.data).json().then(msg => {
-        let new_messages = store.state.messages;
-        new_messages.push(msg);
-        store.commit("messages", new_messages);
+        console.log("Message: ", msg);
+        if (msg.Type === "chat-message") {
+          let new_messages = store.state.messages;
+          new_messages.push(msg.Payload);
+          store.commit("messages", new_messages);
 
-        let new_channels = store.state.channels;
-        for (let i = 0; i < new_channels.length; i++) {
-          if (new_channels[i].id === msg.channel) {
-            new_channels[i].Alert = true;
+          let new_channels = store.state.channels;
+          for (let i = 0; i < new_channels.length; i++) {
+            if (new_channels[i].id === msg.Payload.channel) {
+              new_channels[i].Alert = true;
+            }
           }
+          store.commit("channels", new_channels);
+          // store.commit("newAlert", msg.channel);
         }
-        store.commit("channels", new_channels);
-        store.commit("newAlert", msg.channel);
       });
     };
     store.subscribe(mut => {
@@ -90,10 +93,19 @@ export default new Vuex.Store({
     addChannel(state, channel) {
       state.channels.push(channel);
     },
-    sendMessages() {},
     signout() {}
   },
   actions: {
+    sendMessages(_, payload) {
+      fetch(`${basepath}/api/message`, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          Authorization: `bearer ${this.state.token}`
+        },
+        body: JSON.stringify(payload)
+      }).catch(err => console.log(err));
+    },
     uploadFiles(uploads) {
       return new Promise((res, rej) => {
         for (let ups of uploads) {

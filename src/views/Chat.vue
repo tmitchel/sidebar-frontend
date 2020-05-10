@@ -205,10 +205,10 @@ export default {
       "uploadFiles",
       "addUserToChannel",
       "loadUser",
-      "updateChannel"
+      "updateChannel",
+      "sendMessages"
     ]),
     ...mapMutations({
-      sendMessages: "sendMessages",
       updateChannels: "channels"
     }),
     // send a message to the chat
