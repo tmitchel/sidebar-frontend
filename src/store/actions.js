@@ -21,7 +21,7 @@ export default {
         body: JSON.stringify(payload)
       })
         .then(res)
-        .catch(rej("Error sending message"));
+        .catch(() => rej("Error sending message"));
     });
   },
   uploadFiles(uploads) {
@@ -34,7 +34,7 @@ export default {
             Authorization: `bearer ${this.state.token}`
           },
           body: ups
-        }).catch(rej("Error uploading file"));
+        }).catch(() => rej("Error uploading file"));
       }
       res();
     });
@@ -127,7 +127,7 @@ export default {
             res(resp.Token);
           });
         })
-        .catch(rej("Error creating new user token"));
+        .catch(() => rej("Error creating new user token"));
     });
   },
   addUserToChannel(_, { channel_id }) {
@@ -146,7 +146,7 @@ export default {
           }
           res();
         })
-        .catch(rej("Error adding user to channel"));
+        .catch(() => rej("Error adding user to channel"));
     });
   },
   removeUserFromChannel(_, { channel_id }) {
@@ -165,7 +165,7 @@ export default {
           }
           res();
         })
-        .catch(rej("Error leaving channel"));
+        .catch(() => rej("Error leaving channel"));
     });
   },
   loadUser({ commit }, id) {
@@ -186,7 +186,7 @@ export default {
             res();
           });
         })
-        .catch(rej("Error loading user"));
+        .catch(() => rej("Error loading user"));
     });
   },
   loadChannel({ commit }, id) {
@@ -205,7 +205,7 @@ export default {
             res();
           });
         })
-        .catch(rej("Error loading channel"));
+        .catch(() => rej("Error loading channel"));
     });
   },
   updateUser({ commit }, user) {
@@ -228,7 +228,7 @@ export default {
             res();
           });
         })
-        .catch(rej("Error updating user information"));
+        .catch(() => rej("Error updating user information"));
     });
   },
   updateChannel({ commit }, channel) {
@@ -251,7 +251,7 @@ export default {
             res();
           });
         })
-        .catch(rej("Error updating channel information"));
+        .catch(() => rej("Error updating channel information"));
     });
   },
   signup({ commit }, { token, user }) {
@@ -271,7 +271,7 @@ export default {
             res();
           });
         })
-        .catch(rej("Error creating new user account"));
+        .catch(() => rej("Error creating new user account"));
     });
   },
   login({ commit }, payload) {
@@ -292,7 +292,7 @@ export default {
             res();
           });
         })
-        .catch(rej("Error logging in"));
+        .catch(() => rej("Error logging in"));
     });
   },
   signout({ commit }) {
@@ -316,7 +316,7 @@ export default {
           }
           rej("Error refreshing token");
         })
-        .catch(rej("Error refreshing token"));
+        .catch(() => rej("Error refreshing token"));
     });
   },
   resolveSidebar(_, channel) {
@@ -336,7 +336,7 @@ export default {
           }
           res();
         })
-        .catch(rej("Error resolving sidebar"));
+        .catch(() => rej("Error resolving sidebar"));
     });
   }
 };
