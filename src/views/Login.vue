@@ -25,7 +25,8 @@
 import LoginBox from "@/components/LoginBox.vue";
 import NewUser from "@/components/NewUser.vue";
 import { mapActions, mapState } from "vuex";
-import store, { createWebSocketPlugin } from "@/store.js";
+import store from "@/store.js";
+import { createWebSocketPlugin } from "@/plugins/websocket.js";
 
 export default {
   props: {
