@@ -5,7 +5,7 @@
         <v-col cols="12" sm="8" md="4">
           <login-box :login="handleLogin" :signup="openSignup"></login-box>
           <v-alert type="error" :value="errored">
-            I'm an error alert.
+            Username/password do not match any records.
           </v-alert>
           <v-overlay
             :absolute="false"
@@ -25,7 +25,8 @@
 import LoginBox from "@/components/LoginBox.vue";
 import NewUser from "@/components/NewUser.vue";
 import { mapActions, mapState } from "vuex";
-import store, { createWebSocketPlugin } from "@/store.js";
+import store from "@/store.js";
+import { createWebSocketPlugin } from "@/plugins/websocket.js";
 
 export default {
   props: {
@@ -45,11 +46,18 @@ export default {
       this.signupOpen = true;
     },
     async handleLogin(email, password) {
-      await this.login({ email, password })
-        .then(() => {
-          this.$router.push("/");
-        })
-        .catch(() => (this.errored = true));
+      this.errored = false;
+      try {
+        await this.login({ email, password });
+        this.$router.push("/");
+      } catch (err) {
+        this.errored = true;
+      }
+
+      if (this.errored) {
+        return;
+      }
+
       if (!this.connected) {
         const websocket_path =
           process.env.NODE_ENV === "development"

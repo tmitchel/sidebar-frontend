@@ -43,6 +43,9 @@
     </v-row>
     <v-btn color="primary" @click.prevent="update" class="ma-1">Update</v-btn>
     <v-btn color="primary" @click.prevent="back" class="ma-1">Close</v-btn>
+    <v-snackbar v-model="errorMessage.ping" color="error" :timeout="5000">
+      {{ errorMessage.text }}
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -56,7 +59,11 @@ export default {
     profile_image: "",
     display_profile_image: "",
     success: false,
-    failure: false
+    failure: false,
+    errorMessage: {
+      ping: false,
+      text: ""
+    }
   }),
   computed: {
     ...mapState(["user"])
@@ -97,7 +104,7 @@ export default {
           vm.success = true;
           vm.display_profile_image = newProfileImage;
         })
-        .catch(() => (vm.failure = false));
+        .catch(err => (this.errorMessage = { text: err, ping: true }));
     }
   },
   created() {

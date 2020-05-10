@@ -88,6 +88,9 @@
         :fileUpload="toggleFileUpload"
       ></message-input>
     </v-footer>
+    <v-snackbar v-model="errorMessage.ping" color="error" :timeout="5000">
+      {{ errorMessage.text }}
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -129,7 +132,11 @@ export default {
     channelPref: false,
     preview: false,
     uploadFile: false,
-    atted: false
+    atted: false,
+    errorMessage: {
+      ping: false,
+      text: ""
+    }
   }),
   updated() {
     if (this.$refs.con !== undefined) {
@@ -220,7 +227,7 @@ export default {
           to_user: "",
           from_user: this.user.id,
           channel: this.$router.history.current.params["channel"]
-        });
+        }).catch(err => (this.errorMessage = { text: err, ping: true }));
       }
     },
     // close the overlay for creating a new channel
@@ -233,19 +240,26 @@ export default {
     },
     // submit the form for creating a new channel
     async submit(newName, newDesc, newImage) {
-      this.newChannel = false;
-      await this.createChannel({
-        Name: newName,
-        details: newDesc,
-        display_image: newImage
-      });
-      await this.addUserToChannel({
-        user_id: this.user.id,
-        channel_id: this.currentChannel.id
-      });
-      await this.loadUser(this.user.id);
-      await this.loadChannel(this.currentChannel.id);
-      this.$router.push(`/chat/${this.currentChannel.id}`);
+      try {
+        await this.createChannel({
+          Name: newName,
+          details: newDesc,
+          display_image: newImage
+        });
+        await this.addUserToChannel({
+          user_id: this.user.id,
+          channel_id: this.currentChannel.id
+        });
+        await this.loadUser(this.user.id);
+        await this.loadChannel(this.currentChannel.id);
+        this.newChannel = false;
+        this.$router.push(`/chat/${this.currentChannel.id}`);
+      } catch (err) {
+        this.errorMessage = {
+          text: err,
+          ping: true
+        };
+      }
     },
     async submitChannelPref(newName, newDesc, newImage) {
       await this.updateChannel({
@@ -259,7 +273,9 @@ export default {
     },
     // handle user signing out
     handleSignout() {
-      this.signout();
+      this.signout().catch(
+        err => (this.errorMessage = { text: err, ping: true })
+      );
       this.$router.push("/login");
     },
     // change the current channel
@@ -286,54 +302,74 @@ export default {
     },
     async submitSidebar(message, name, desc, img) {
       this.newSidebar = false;
-      await this.createSidebar({
-        parent: message.channel,
-        name: name,
-        user: this.user.id,
-        desc: desc,
-        display_image: img
-      });
-      await this.loadUser(this.user.id);
-      await this.loadChannel(this.currentChannel.id);
+      try {
+        await this.createSidebar({
+          parent: message.channel,
+          name: name,
+          user: this.user.id,
+          desc: desc,
+          display_image: img
+        });
+        await this.loadUser(this.user.id);
+        await this.loadChannel(this.currentChannel.id);
+      } catch (err) {
+        this.errorMessage = { text: err, ping: true };
+      }
       this.$router.push(`/chat/${this.currentChannel.id}`);
     },
     async startDirect(message) {
-      await this.createDirect({
-        to_id: message.user_info.id,
-        from_id: this.user.id,
-        name: message.user_info.display_name,
-        desc: `Direct message with ${message.user_info.display_name}`
-      });
-      await this.loadUser(this.user.id);
-      await this.loadChannel(this.currentChannel.id);
+      try {
+        await this.createDirect({
+          to_id: message.user_info.id,
+          from_id: this.user.id,
+          name: message.user_info.display_name,
+          desc: `Direct message with ${message.user_info.display_name}`
+        });
+        await this.loadUser(this.user.id);
+        await this.loadChannel(this.currentChannel.id);
+      } catch (err) {
+        this.errorMessage = { text: err, ping: true };
+      }
       this.$router.push(`/chat/${this.currentChannel.id}`);
     },
     handleTyping() {
       console.log("typing now");
     },
     async leaveChannel(channel_id) {
-      await this.removeUserFromChannel({
-        user_id: this.user.id,
-        channel_id: channel_id
-      });
-      await this.loadUser(this.user.id);
+      try {
+        await this.removeUserFromChannel({
+          user_id: this.user.id,
+          channel_id: channel_id
+        });
+        await this.loadUser(this.user.id);
+      } catch (err) {
+        this.errorMessage = { text: err, ping: true };
+      }
     },
     async addUser(channel_id) {
-      await this.addUserToChannel({
-        user_id: this.user.id,
-        channel_id: channel_id
-      });
-      await this.loadChannel(this.$router.history.current.params["channel"]);
-      await this.loadUser(this.user.id);
+      try {
+        await this.addUserToChannel({
+          user_id: this.user.id,
+          channel_id: channel_id
+        });
+        await this.loadChannel(this.$router.history.current.params["channel"]);
+        await this.loadUser(this.user.id);
+      } catch (err) {
+        this.errorMessage = { text: err, ping: true };
+      }
     },
     async invite() {
       this.newToken = await this.newToken();
       this.Invite = true;
     },
     async handleResolve(channel_id) {
-      await this.resolveSidebar(channel_id);
-      await this.loadUser(this.user.id);
-      await this.loadChannel(this.$router.history.current.params["channel"]);
+      try {
+        await this.resolveSidebar(channel_id);
+        await this.loadUser(this.user.id);
+        await this.loadChannel(this.$router.history.current.params["channel"]);
+      } catch (err) {
+        this.errorMessage = { text: err, ping: true };
+      }
     },
     toggleFileUpload() {
       this.uploadFile = !this.uploadFile;
