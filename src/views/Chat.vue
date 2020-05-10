@@ -240,7 +240,6 @@ export default {
     },
     // submit the form for creating a new channel
     async submit(newName, newDesc, newImage) {
-      this.newChannel = false;
       try {
         await this.createChannel({
           Name: newName,
@@ -253,13 +252,14 @@ export default {
         });
         await this.loadUser(this.user.id);
         await this.loadChannel(this.currentChannel.id);
+        this.newChannel = false;
+        this.$router.push(`/chat/${this.currentChannel.id}`);
       } catch (err) {
         this.errorMessage = {
           text: err,
           ping: true
         };
       }
-      this.$router.push(`/chat/${this.currentChannel.id}`);
     },
     async submitChannelPref(newName, newDesc, newImage) {
       await this.updateChannel({
