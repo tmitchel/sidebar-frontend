@@ -146,7 +146,8 @@ export default {
       "messages",
       "event",
       "currentChannel",
-      "channels"
+      "channels",
+      "alert"
     ]),
     findMatches() {
       if (this.messages === undefined) {
@@ -204,10 +205,10 @@ export default {
       "uploadFiles",
       "addUserToChannel",
       "loadUser",
-      "updateChannel"
+      "updateChannel",
+      "sendMessages"
     ]),
     ...mapMutations({
-      sendMessages: "sendMessages",
       updateChannels: "channels"
     }),
     // send a message to the chat
@@ -266,6 +267,7 @@ export default {
       if (this.$router.history.current.path !== `/chat/${chan.id}`) {
         let all_channels = this.channels;
         all_channels.find(c => c.id === chan.id).Alert = false;
+        this.alert[chan.id] = false;
         this.updateChannels(all_channels);
         this.$router.push(`/chat/${chan.id}`);
         this.loadChannel(chan.id);
