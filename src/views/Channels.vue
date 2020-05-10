@@ -56,9 +56,14 @@
       </v-list>
     </v-container>
     <v-container>
-      <v-btn color="secondary" class="ma-1" @click.prevent="newChannel = true">New Channel</v-btn>
+      <v-btn color="secondary" class="ma-1" @click.prevent="newChannel = true"
+        >New Channel</v-btn
+      >
       <v-btn color="secondary" class="ma-1" @click.prevent="back">Cancel</v-btn>
     </v-container>
+    <v-snackbar v-model="errorMessage.ping" color="error" :timeout="5000">
+      {{ errorMessage.text }}
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -71,7 +76,11 @@ export default {
   components: { NewChannel },
   data: () => ({
     channel: "",
-    newChannel: false
+    newChannel: false,
+    errorMessage: {
+      ping: false,
+      text: ""
+    }
   }),
   computed: {
     ...mapState(["channels", "user"]),
@@ -99,10 +108,14 @@ export default {
     // submit the form for creating a new channel
     async submit(newName, newDesc) {
       this.newChannel = false;
-      await this.createChannel({
-        Name: newName,
-        details: newDesc
-      });
+      try {
+        await this.createChannel({
+          Name: newName,
+          details: newDesc
+        });
+      } catch (err) {
+        this.errorMessage = { text: err, ping: true };
+      }
     }
   },
   async created() {
