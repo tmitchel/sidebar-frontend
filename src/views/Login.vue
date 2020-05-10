@@ -37,7 +37,7 @@ export default {
     errored: false
   }),
   computed: {
-    ...mapState(["connected"])
+    ...mapState(["connected", "token"])
   },
   methods: {
     ...mapActions(["login", "signup"]),
@@ -53,8 +53,8 @@ export default {
       if (!this.connected) {
         const websocket_path =
           process.env.NODE_ENV === "development"
-            ? "wss://localhost:8080/ws"
-            : "wss://sidebar-backend.herokuapp.com/ws";
+            ? `wss://localhost:8080/api/ws?auth_code=${this.token}`
+            : `wss://sidebar-backend.herokuapp.com/api/ws?auth_code=${this.token}`;
         const socket = new WebSocket(websocket_path);
         createWebSocketPlugin(socket)(store);
       }

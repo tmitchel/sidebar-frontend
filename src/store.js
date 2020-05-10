@@ -17,20 +17,21 @@ export function createWebSocketPlugin(socket) {
     store.state.connected = true;
     socket.onmessage = event => {
       new Response(event.data).json().then(msg => {
-        let new_messages = store.state.messages;
-        new_messages.push(msg);
-        store.commit("messages", new_messages);
+        console.log("Message: ", msg);
+        if (msg.Type === "chat-message") {
+          let new_messages = store.state.messages;
+          new_messages.push(msg.Payload);
+          store.commit("messages", new_messages);
 
-        let new_channels = store.state.channels;
-        if (msg.channel !== store.state.currentChannel.id) {
+          let new_channels = store.state.channels;
           for (let i = 0; i < new_channels.length; i++) {
-            if (new_channels[i].id === msg.channel) {
+            if (new_channels[i].id === msg.Payload.channel) {
               new_channels[i].Alert = true;
             }
           }
+          store.commit("channels", new_channels);
+          // store.commit("newAlert", msg.channel);
         }
-        console.log("commit new channels");
-        store.commit("channels", new_channels);
       });
     };
     store.subscribe(mut => {
@@ -55,6 +56,8 @@ export function createWebSocketPlugin(socket) {
 export default new Vuex.Store({
   state: {
     connected: false,
+    token: "",
+    alert: {},
     user: defaultUser,
     currentChannel: {},
     usersInChannel: [],
@@ -63,6 +66,9 @@ export default new Vuex.Store({
     event: {}
   },
   mutations: {
+    updateToken(state, token) {
+      state.token = token;
+    },
     updateUser(state, user) {
       state.user = user;
     },
@@ -71,6 +77,12 @@ export default new Vuex.Store({
     },
     channels(state, channels) {
       state.channels = channels;
+      for (let i = 0; i < channels.length; i++) {
+        state.alert[channels[i].id] = false;
+      }
+    },
+    newAlert(state, channelID) {
+      state.alerts[channelID] = true;
     },
     users(state, usersInChannel) {
       state.usersInChannel = usersInChannel;
@@ -81,17 +93,28 @@ export default new Vuex.Store({
     addChannel(state, channel) {
       state.channels.push(channel);
     },
-    sendMessages() {},
     signout() {}
   },
   actions: {
+    sendMessages(_, payload) {
+      fetch(`${basepath}/api/message`, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          Authorization: `bearer ${this.state.token}`
+        },
+        body: JSON.stringify(payload)
+      }).catch(err => console.log(err));
+    },
     uploadFiles(uploads) {
       return new Promise((res, rej) => {
         for (let ups of uploads) {
           fetch(`${basepath}/api/upload`, {
             method: "POST",
             mode: "cors",
-            credentials: "include",
+            headers: {
+              Authorization: `bearer ${this.state.token}`
+            },
             body: ups
           }).catch(err => rej(err));
         }
@@ -103,7 +126,9 @@ export default new Vuex.Store({
         fetch(`${basepath}/api/channel`, {
           method: "POST",
           mode: "cors",
-          credentials: "include",
+          headers: {
+            Authorization: `bearer ${this.state.token}`
+          },
           body: JSON.stringify(channel)
         }).then(resp => {
           if (resp.status !== 200) {
@@ -118,12 +143,14 @@ export default new Vuex.Store({
         });
       });
     },
-    createDirect({ commit }, { to_id, from_id, name, desc }) {
+    createDirect({ commit }, { to_id, name, desc }) {
       return new Promise((res, rej) => {
-        fetch(`${basepath}/api/direct/${to_id}/${from_id}`, {
+        fetch(`${basepath}/api/direct/${to_id}`, {
           method: "POST",
           mode: "cors",
-          credentials: "include",
+          headers: {
+            Authorization: `bearer ${this.state.token}`
+          },
           body: JSON.stringify({ Name: name, details: desc })
         })
           .then(resp => {
@@ -145,7 +172,9 @@ export default new Vuex.Store({
         fetch(`${basepath}/api/sidebar/${parent}/${user}`, {
           method: "POST",
           mode: "cors",
-          credentials: "include",
+          headers: {
+            Authorization: `bearer ${this.state.token}`
+          },
           body: JSON.stringify({ Name: name, details: desc })
         })
           .then(resp => {
@@ -167,7 +196,9 @@ export default new Vuex.Store({
         fetch(`${basepath}/api/new_token`, {
           method: "POST",
           mode: "cors",
-          credentials: "include"
+          headers: {
+            Authorization: `bearer ${this.state.token}`
+          }
         })
           .then(resp => {
             if (resp.status !== 200) {
@@ -181,12 +212,14 @@ export default new Vuex.Store({
           .catch(() => rej());
       });
     },
-    addUserToChannel(_, { user_id, channel_id }) {
+    addUserToChannel(_, { channel_id }) {
       return new Promise((res, rej) => {
-        fetch(`${basepath}/api/add/${user_id}/${channel_id}`, {
+        fetch(`${basepath}/api/add/${channel_id}`, {
           method: "POST",
           mode: "cors",
-          credentials: "include"
+          headers: {
+            Authorization: `bearer ${this.state.token}`
+          }
         })
           .then(resp => {
             if (resp.status !== 200) {
@@ -198,12 +231,14 @@ export default new Vuex.Store({
           .catch(() => rej());
       });
     },
-    removeUserFromChannel(_, { user_id, channel_id }) {
+    removeUserFromChannel(_, { channel_id }) {
       return new Promise((res, rej) => {
-        fetch(`${basepath}/api/leave/${user_id}/${channel_id}`, {
+        fetch(`${basepath}/api/leave/${channel_id}`, {
           method: "DELETE",
           mode: "cors",
-          credentials: "include"
+          headers: {
+            Authorization: `bearer ${this.state.token}`
+          }
         })
           .then(resp => {
             if (resp.status !== 200) {
@@ -216,9 +251,12 @@ export default new Vuex.Store({
       });
     },
     loadUser({ commit }, id) {
+      console.log(this);
       fetch(`${basepath}/api/load_user/${id}`, {
         method: "GET",
-        credentials: "include"
+        headers: {
+          Authorization: `bearer ${this.state.token}`
+        }
       })
         .then(resp => {
           resp.json().then(resp => {
@@ -234,7 +272,9 @@ export default new Vuex.Store({
     loadChannel({ commit }, id) {
       fetch(`${basepath}/api/load_channel/${id}`, {
         method: "GET",
-        credentials: "include"
+        headers: {
+          Authorization: `bearer ${this.state.token}`
+        }
       })
         .then(resp => {
           resp.json().then(resp => {
@@ -250,7 +290,9 @@ export default new Vuex.Store({
         fetch(`${basepath}/api/update-userinfo`, {
           method: "POST",
           mode: "cors",
-          credentials: "include",
+          headers: {
+            Authorization: `bearer ${this.state.token}`
+          },
           body: JSON.stringify(user)
         })
           .then(resp => {
@@ -271,7 +313,9 @@ export default new Vuex.Store({
         fetch(`${basepath}/api/update-channelinfo`, {
           method: "POST",
           mode: "cors",
-          credentials: "include",
+          headers: {
+            Authorization: `bearer ${this.state.token}`
+          },
           body: JSON.stringify(channel)
         })
           .then(resp => {
@@ -292,7 +336,6 @@ export default new Vuex.Store({
         fetch(`${basepath}/api/user/${token}`, {
           method: "POST",
           mode: "cors",
-          credentials: "include",
           body: JSON.stringify(user)
         })
           .then(resp => {
@@ -313,7 +356,6 @@ export default new Vuex.Store({
         fetch(`${basepath}/login`, {
           method: "POST",
           mode: "cors",
-          credentials: "include",
           body: JSON.stringify(payload)
         })
           .then(resp => {
@@ -322,7 +364,8 @@ export default new Vuex.Store({
               return;
             }
             resp.json().then(resp => {
-              commit("updateUser", resp);
+              commit("updateUser", resp.User);
+              commit("updateToken", resp.Token);
               res();
             });
           })
@@ -338,6 +381,9 @@ export default new Vuex.Store({
         fetch(`${basepath}/api/refresh_token`, {
           method: "POST",
           mode: "cors",
+          headers: {
+            Authorization: `bearer ${this.state.token}`
+          },
           credentials: "include"
         }).then(resp => {
           if (resp.status === 200 || resp.status == 425) {
@@ -353,6 +399,9 @@ export default new Vuex.Store({
         fetch(`${basepath}/api/resolve/${channel}`, {
           method: "POST",
           mode: "cors",
+          headers: {
+            Authorization: `bearer ${this.state.token}`
+          },
           credentials: "include"
         }).then(resp => {
           if (resp.status !== 200) {
