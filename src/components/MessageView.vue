@@ -10,15 +10,18 @@
               </v-avatar>
               {{ message.user_info.display_name }}
             </v-card-subtitle>
-            <v-card-text v-if="!message.Markdown" class="text-left pb-0 mt-1">
+            <v-card-text v-if="message.Formatted" class="text-left pb-0 mt-1">
               {{ message.content }}
             </v-card-text>
-            <v-card-text v-else class="text-left pb-0 mt-1">
-              <div v-html="formed"></div>
-            </v-card-text>
+            <span v-html="message.content" class="text-left pb-0 mt-1"></span>
           </v-col>
           <v-col v-if="hover" class="pl-0">
-            <v-btn @click.prevent="startSidebar(message)" :disabled="channel.is_sidebar === true" icon class="mt-0">
+            <v-btn
+              @click.prevent="startSidebar(message)"
+              :disabled="channel.is_sidebar === true"
+              icon
+              class="mt-0"
+            >
               <v-icon>mdi-database-plus</v-icon>
             </v-btn>
             <v-btn

@@ -36,7 +36,7 @@
               </v-list-item>
             </v-list>
           </v-menu>
-          <v-dialog attach="#test" width="400">
+          <!-- <v-dialog attach="#test" width="400">
             <template v-slot:activator="{ on }">
               <v-btn id="test" dark icon v-on="on">
                 <v-icon>mdi-emoticon-happy-outline</v-icon>
@@ -45,7 +45,7 @@
             <v-card>
               <v-card-text>hi</v-card-text>
             </v-card>
-          </v-dialog>
+          </v-dialog> -->
           <!-- <v-btn icon @click.prevent="preview = !preview">
             <v-icon>mdi-format-letter-case</v-icon>
           </v-btn>
