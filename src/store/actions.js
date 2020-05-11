@@ -279,6 +279,7 @@ export default {
       fetch(`${basepath}/login`, {
         method: "POST",
         mode: "cors",
+        credentials: "include",
         body: JSON.stringify(payload)
       })
         .then(resp => {
@@ -299,18 +300,16 @@ export default {
     commit("updateUser", defaultUser);
     commit("signout");
   },
-  refreshToken() {
+  refreshToken({ commit }) {
     return new Promise((res, rej) => {
-      fetch(`${basepath}/api/refresh_token`, {
+      fetch(`${basepath}/refresh_token`, {
         method: "POST",
         mode: "cors",
-        headers: {
-          Authorization: `bearer ${this.state.token}`
-        },
         credentials: "include"
       })
         .then(resp => {
-          if (resp.status === 200 || resp.status == 425) {
+          if (resp.status === 200) {
+            resp.json().then(r => commit("updateToken", r.Token));
             res();
             return;
           }
