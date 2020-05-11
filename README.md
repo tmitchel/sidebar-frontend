@@ -1,5 +1,7 @@
 # sidebar-frontend
 
+![Example sidebar](https://github.com/tmitchel/sidebar-front/raw/master/images/sidebar_front_example.png)
+
 ## Project setup
 ```
 yarn install
