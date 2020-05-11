@@ -1,6 +1,6 @@
 # sidebar-frontend
 
-![Example sidebar](https://github.com/tmitchel/sidebar-front/raw/master/images/sidebar_front_example.png)
+![Example sidebar](https://github.com/tmitchel/sidebar-frontend/raw/master/images/sidebar_front_example.png)
 
 ## Project setup
 ```
