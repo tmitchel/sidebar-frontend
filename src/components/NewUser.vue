@@ -27,7 +27,6 @@
           :error-messages="passwordError"
           required
         ></v-text-field>
-        <v-text-field v-model="token" label="Token" required></v-text-field>
         <v-text-field v-model="profileImg" label="Profile Image"></v-text-field>
       </v-form>
     </v-container>
