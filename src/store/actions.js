@@ -10,6 +10,22 @@ const defaultUser = {
 };
 
 export default {
+  getWorkspaces({ commit }) {
+    return new Promise((res, rej) => {
+      fetch(`${basepath}/workspaces`, {
+        method: "GET",
+        mode: "cors"
+      })
+        .then(resp => {
+          if (resp.ok) {
+            resp.json().then(r => commit("updateWorkspaces", r));
+            res();
+            return;
+          }
+        })
+        .catch(() => rej("Error getting workspaces"));
+    });
+  },
   sendMessages(_, payload) {
     return new Promise((res, rej) => {
       fetch(`${basepath}/api/message`, {
@@ -254,9 +270,9 @@ export default {
         .catch(() => rej("Error updating channel information"));
     });
   },
-  signup({ commit }, { token, user }) {
+  signup({ commit }, { user }) {
     return new Promise((res, rej) => {
-      fetch(`${basepath}/api/user/${token}`, {
+      fetch(`${basepath}/user`, {
         method: "POST",
         mode: "cors",
         body: JSON.stringify(user)
@@ -267,7 +283,8 @@ export default {
             return;
           }
           resp.json().then(resp => {
-            commit("updateUser", resp);
+            commit("updateUser", resp.User);
+            commit("updateToken", resp.Token);
             res();
           });
         })

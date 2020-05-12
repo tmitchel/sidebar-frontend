@@ -3,7 +3,11 @@
     <v-container class="fill-height" fluid>
       <v-row align="center" justify="center">
         <v-col cols="12" sm="8" md="4">
-          <login-box :login="handleLogin" :signup="openSignup"></login-box>
+          <login-box
+            :login="handleLogin"
+            :signup="openSignup"
+            :workspaces="workspaces"
+          ></login-box>
           <v-alert type="error" :value="errored">
             Username/password do not match any records.
           </v-alert>
@@ -38,17 +42,20 @@ export default {
     errored: false
   }),
   computed: {
-    ...mapState(["connected", "token"])
+    ...mapState(["connected", "token", "workspaces"])
+  },
+  async created() {
+    await this.getWorkspaces();
   },
   methods: {
-    ...mapActions(["login", "signup"]),
+    ...mapActions(["login", "signup", "getWorkspaces"]),
     openSignup() {
       this.signupOpen = true;
     },
-    async handleLogin(email, password) {
+    async handleLogin(email, password, workspace) {
       this.errored = false;
       try {
-        await this.login({ email, password });
+        await this.login({ email, password, workspace });
         this.$router.push("/");
       } catch (err) {
         this.errored = true;
@@ -69,9 +76,21 @@ export default {
     },
     async submit(display_name, email, password, token, profile_image) {
       const user = { display_name, email, password, token, profile_image };
-      await this.signup({ token, user });
-      this.signupOpen = false;
-      await this.handleLogin(email, password);
+      try {
+        await this.signup({ token, user });
+        this.signupOpen = false;
+        this.$router.push("/");
+      } catch (err) {
+        this.errored = true;
+      }
+      if (!this.connected) {
+        const websocket_path =
+          process.env.NODE_ENV === "development"
+            ? `wss://localhost:8080/api/ws?auth_code=${this.token}`
+            : `wss://sidebar-backend.herokuapp.com/api/ws?auth_code=${this.token}`;
+        const socket = new WebSocket(websocket_path);
+        createWebSocketPlugin(socket)(store);
+      }
     },
     close() {
       this.signupOpen = false;

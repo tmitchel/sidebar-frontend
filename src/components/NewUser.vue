@@ -27,7 +27,6 @@
           :error-messages="passwordError"
           required
         ></v-text-field>
-        <v-text-field v-model="token" label="Token" required></v-text-field>
         <v-text-field v-model="profileImg" label="Profile Image"></v-text-field>
       </v-form>
     </v-container>
@@ -108,15 +107,6 @@ export default {
       } else {
         return [];
       }
-    },
-    tokenError() {
-      if (!this.$v.token.$dirty) {
-        return [];
-      } else if (!this.$v.token.required || !this.$v.token.email) {
-        return ["Valid token is required"];
-      } else {
-        return [];
-      }
     }
   },
   mixins: [validationMixin],
@@ -129,9 +119,6 @@ export default {
     email: {
       required,
       email
-    },
-    token: {
-      required
     },
     password: {
       required,
