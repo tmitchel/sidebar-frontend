@@ -275,6 +275,7 @@ export default {
       fetch(`${basepath}/user`, {
         method: "POST",
         mode: "cors",
+        credentials: "include",
         body: JSON.stringify(user)
       })
         .then(resp => {
