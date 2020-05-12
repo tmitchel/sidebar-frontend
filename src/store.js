@@ -16,6 +16,7 @@ export default new Vuex.Store({
     connected: false,
     token: "",
     alert: {},
+    workspaces: [],
     user: defaultUser,
     currentChannel: {},
     usersInChannel: [],

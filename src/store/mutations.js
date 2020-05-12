@@ -2,6 +2,9 @@ export default {
   updateToken(state, token) {
     state.token = token;
   },
+  updateWorkspaces(state, ws) {
+    state.workspaces = ws;
+  },
   updateUser(state, user) {
     state.user = user;
   },

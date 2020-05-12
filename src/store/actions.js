@@ -10,6 +10,22 @@ const defaultUser = {
 };
 
 export default {
+  getWorkspaces({ commit }) {
+    return new Promise((res, rej) => {
+      fetch(`${basepath}/workspaces`, {
+        method: "GET",
+        mode: "cors"
+      })
+        .then(resp => {
+          if (resp.ok) {
+            resp.json().then(r => commit("updateWorkspaces", r));
+            res();
+            return;
+          }
+        })
+        .catch(() => rej("Error getting workspaces"));
+    });
+  },
   sendMessages(_, payload) {
     return new Promise((res, rej) => {
       fetch(`${basepath}/api/message`, {

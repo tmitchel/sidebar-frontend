@@ -15,11 +15,18 @@
           type="password"
           @keypress.enter.prevent="login(email, password)"
         />
+        <v-select
+          v-model="workspace"
+          :items="workspaces"
+          label="Workspace"
+          item-text="display_name"
+          item-value="id"
+        ></v-select>
       </v-form>
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <v-btn @click.prevent="login(email, password)" color="primary"
+      <v-btn @click.prevent="login(email, password, workspace)" color="primary"
         >Login</v-btn
       >
       <v-btn color="primary" @click.prevent="signup">Sign Up</v-btn>
@@ -30,10 +37,11 @@
 <script>
 export default {
   name: "LoginBox",
-  props: ["login", "signup"],
+  props: ["login", "signup", "workspaces"],
   data: () => ({
     email: "",
-    password: ""
+    password: "",
+    workspace: ""
   })
 };
 </script>
