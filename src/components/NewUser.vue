@@ -107,15 +107,6 @@ export default {
       } else {
         return [];
       }
-    },
-    tokenError() {
-      if (!this.$v.token.$dirty) {
-        return [];
-      } else if (!this.$v.token.required || !this.$v.token.email) {
-        return ["Valid token is required"];
-      } else {
-        return [];
-      }
     }
   },
   mixins: [validationMixin],
@@ -128,9 +119,6 @@ export default {
     email: {
       required,
       email
-    },
-    token: {
-      required
     },
     password: {
       required,

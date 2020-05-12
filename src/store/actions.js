@@ -270,9 +270,9 @@ export default {
         .catch(() => rej("Error updating channel information"));
     });
   },
-  signup({ commit }, { token, user }) {
+  signup({ commit }, { user }) {
     return new Promise((res, rej) => {
-      fetch(`${basepath}/api/user/${token}`, {
+      fetch(`${basepath}/user`, {
         method: "POST",
         mode: "cors",
         body: JSON.stringify(user)
@@ -283,7 +283,8 @@ export default {
             return;
           }
           resp.json().then(resp => {
-            commit("updateUser", resp);
+            commit("updateUser", resp.User);
+            commit("updateToken", resp.Token);
             res();
           });
         })
